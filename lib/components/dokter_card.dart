@@ -6,9 +6,11 @@ class DoctorCard extends StatelessWidget {
   final String specialty;
   final String hospital;
   final VoidCallback? onBookTap;
+  final bool showHospital;
 
   const DoctorCard({
     super.key,
+    this.showHospital = true,
     required this.imageUrl,
     required this.name,
     required this.specialty,
@@ -21,20 +23,36 @@ class DoctorCard extends StatelessWidget {
     return Card(
       elevation: 3,
       color: Colors.white,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          width: 0.5,
+          color: const Color.fromARGB(255, 192, 192, 192),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             // Foto dokter
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color.fromARGB(
+                    255,
+                    197,
+                    197,
+                    197,
+                  ), // warna border
+                  width: 0.5, // ketebalan border
+                ),
+                borderRadius: BorderRadius.circular(8), // radius border
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(imageUrl, fit: BoxFit.cover),
               ),
             ),
             const SizedBox(width: 12),
@@ -59,26 +77,27 @@ class DoctorCard extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          hospital,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                  if (showHospital)
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: Colors.grey,
                         ),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            hospital,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

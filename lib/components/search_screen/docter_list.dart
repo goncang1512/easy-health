@@ -21,11 +21,14 @@ class ListViewDoctor extends StatefulWidget {
   final String? keyword;
   final List<Docter> docters;
   final String title;
+  final bool showHospital;
+
   const ListViewDoctor({
     super.key,
     this.keyword,
     required this.docters,
     required this.title,
+    this.showHospital = true,
   });
 
   @override
@@ -42,14 +45,17 @@ class _ListDocter extends State<ListViewDoctor> {
           widget.title,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
+        const SizedBox(height: 8),
         ListView.builder(
           shrinkWrap: true, // <--- penting biar ikut tinggi konten
+          padding: EdgeInsets.zero,
           physics:
               NeverScrollableScrollPhysics(), // <--- biar scroll hanya parent
           itemCount: widget.docters.length,
           itemBuilder: (context, index) {
             final h = widget.docters[index];
             return DoctorCard(
+              showHospital: widget.showHospital,
               imageUrl: h.imageUrl,
               name: "dr. Toto",
               hospital: "RS USU",

@@ -24,6 +24,7 @@ class _SearchPage extends State<SearchScreen> {
   final List<Hospital> hospitals = List.generate(
     10,
     (i) => Hospital(
+      hospitalId: "asd99asdf9s${i + 1}",
       imageUrl:
           'https://i.pinimg.com/1200x/bc/c0/13/bcc013aa69420dc0f628c713a8e27e78.jpg',
       name: 'RS Contoh #${i + 1}',
@@ -57,7 +58,7 @@ class _SearchPage extends State<SearchScreen> {
           children: [
             InputSearchField(keyword: keyword),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
               child: ListViewNewHospital(
                 hospitals: hospitals,
                 title: keyword != null && keyword!.isNotEmpty

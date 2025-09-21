@@ -1,3 +1,5 @@
+import 'package:easyhealth/pages/hospital_screen.dart';
+import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
 
 class HospitalCard extends StatelessWidget {
@@ -7,9 +9,11 @@ class HospitalCard extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback? onFavoriteTap;
   final VoidCallback? onTap;
+  final String hospitalId;
 
   const HospitalCard({
     super.key,
+    required this.hospitalId,
     required this.imageUrl,
     required this.name,
     required this.address,
@@ -38,35 +42,52 @@ class HospitalCard extends StatelessWidget {
           child: Row(
             children: [
               // Gambar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  imageUrl,
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  NavigationHelper.push(
+                    context,
+                    HospitalScreen(hospitalId: hospitalId),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    imageUrl,
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
+
               const SizedBox(width: 12),
 
               // Nama & Alamat
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                child: GestureDetector(
+                  onTap: () {
+                    NavigationHelper.push(
+                      context,
+                      HospitalScreen(hospitalId: hospitalId),
+                    );
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      address,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        address,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 

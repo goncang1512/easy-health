@@ -5,8 +5,14 @@ class Hospital {
   final String imageUrl;
   final String name;
   final String address;
+  final String hospitalId;
 
-  Hospital({required this.imageUrl, required this.name, required this.address});
+  Hospital({
+    required this.imageUrl,
+    required this.hospitalId,
+    required this.name,
+    required this.address,
+  });
 }
 
 class ListViewNewHospital extends StatefulWidget {
@@ -42,6 +48,7 @@ class _ListNewHospital extends State<ListViewNewHospital> {
           itemBuilder: (context, index) {
             final h = widget.hospitals[index];
             return HospitalCard(
+              hospitalId: h.hospitalId,
               imageUrl: h.imageUrl,
               name: h.name,
               address: h.address,
