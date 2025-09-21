@@ -1,9 +1,11 @@
+import 'package:easyhealth/components/main_screen.dart';
 import 'package:easyhealth/pages/search_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
 
 class InputSearchField extends StatefulWidget {
-  const InputSearchField({super.key});
+  final String? keyword;
+  const InputSearchField({super.key, this.keyword});
 
   @override
   State<InputSearchField> createState() => InputComponent();
@@ -18,10 +20,19 @@ class InputComponent extends State<InputSearchField> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = widget.keyword ?? "";
+  }
+
   void _onSearch(String value) {
     NavigationHelper.push(
       context,
-      SearchScreen(keyword: _searchController.text),
+      MainScreen(
+        index: 2,
+        screen: SearchScreen(keyword: _searchController.text),
+      ),
     );
   }
 
