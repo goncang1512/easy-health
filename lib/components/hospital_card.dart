@@ -24,10 +24,15 @@ class HospitalCard extends StatelessWidget {
       onTap: onTap, // klik keseluruhan card
       borderRadius: BorderRadius.circular(12),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            width: 0.5,
+            color: const Color.fromARGB(255, 192, 192, 192),
+          ),
+        ),
         elevation: 2,
         color: Colors.white,
-        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
