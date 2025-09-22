@@ -53,40 +53,83 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Hapus backgroundColor dari Scaffold
-      body: Container(
-        // Gunakan Container untuk latar belakang gradien
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 222, 229, 233),
-              Color.fromARGB(255, 232, 241, 245),
-              Color.fromARGB(255, 193, 207, 213),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      backgroundColor: Colors.white, // background putih
+      body: Stack(
+        children: [
+          // Background dekorasi lingkaran hijau transparan
+          Positioned(
+            top: 80,
+            right: 40,
+            child: CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.green.withValues(alpha: 0.1),
+            ),
           ),
-        ),
-
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Splash Screen", style: TextStyle(fontSize: 50)),
-              // Hero(
-              //   tag: "app_logo",
-              //   // child: Image.asset(
-              //   //   "assets/images/logo-android.png",
-
-              //   //   width: 400,
-
-              //   //   height: 400,
-              //   // ),
-              // ),
-              const SizedBox(height: 10),
-            ],
+          Positioned(
+            bottom: 120,
+            left: 30,
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.green.withValues(alpha: 0.1),
+            ),
           ),
-        ),
+          Positioned(
+            bottom: -40,
+            right: -20,
+            child: CircleAvatar(
+              radius: 120,
+              backgroundColor: Colors.green.withValues(alpha: 0.15),
+            ),
+          ),
+          // Konten utama
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Logo aplikasi (bisa ganti dengan Image.asset jika punya logo file PNG/SVG)
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10B981), // hijau seperti gambar
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Image.asset(
+                    "images/stetoscope.png",
+                    width: 60,
+                    height: 60,
+                    color: Colors.white, // kalau mau icon jadi putih
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Easy Health",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Booking Dokter Lebih Mudah",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          // versi aplikasi di bawah
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                "v1.2",
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
