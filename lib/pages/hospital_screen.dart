@@ -15,6 +15,7 @@ class _HospitalPage extends State<HospitalScreen> {
   final List<Docter> docters = List.generate(
     5,
     (i) => Docter(
+      id: "${i + 1}",
       imageUrl:
           'https://i.pinimg.com/736x/c2/db/2d/c2db2da630a1d117a3e1297ed7fd9b96.jpg',
       name: 'RS Contoh #${i + 1}',
