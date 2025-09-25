@@ -1,3 +1,4 @@
+import 'package:easyhealth/screens/chatlist_screen.dart';
 import 'package:easyhealth/widgets/bottom_navigation.dart';
 import 'package:easyhealth/screens/booking_screen.dart';
 import 'package:easyhealth/screens/home_screen.dart';
@@ -18,21 +19,23 @@ class MainScreen extends StatefulWidget {
 class _MainPage extends State<MainScreen> {
   int _selectedIndex = 0;
   Widget? _customScreen;
+  String role = "Admin";
+  late List<Widget> _screenOptions;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.index ?? _selectedIndex; // isi setelah state dibuat
     _customScreen = widget.screen;
-  }
 
-  static const List<Widget> _screenOptions = <Widget>[
-    HomeScreen(),
-    BookingScreen(),
-    SearchScreen(),
-    NotifScreen(),
-    ProfileScreen(),
-  ];
+    _screenOptions = [
+      HomeScreen(),
+      BookingScreen(),
+      SearchScreen(),
+      role == "Admin" ? ChatListScreen() : NotifScreen(),
+      ProfileScreen(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -46,6 +49,7 @@ class _MainPage extends State<MainScreen> {
     return Scaffold(
       body: _customScreen ?? _screenOptions.elementAt(_selectedIndex),
       bottomNavigationBar: ButtonNavBar(
+        role: role,
         onItemTapped: _onItemTapped,
         selectedIndex: _selectedIndex,
       ),

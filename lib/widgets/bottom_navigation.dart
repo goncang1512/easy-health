@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 
-class ButtonNavBar extends StatefulWidget {
+class ButtonNavBar extends StatelessWidget {
   final Function(int)? onItemTapped;
   final int selectedIndex;
-  const ButtonNavBar({super.key, this.onItemTapped, this.selectedIndex = 0});
+  final String role;
+  const ButtonNavBar({
+    super.key,
+    this.onItemTapped,
+    this.selectedIndex = 0,
+    required this.role,
+  });
 
-  @override
-  State<ButtonNavBar> createState() => _BottomComponent();
-}
-
-class _BottomComponent extends State<ButtonNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         // item pertama
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.list), label: "Booking"),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: "Notifikasi",
+        const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Beranda"),
+        const BottomNavigationBarItem(icon: Icon(Icons.list), label: "Booking"),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: "Pencarian",
         ),
         BottomNavigationBarItem(
+          icon: Icon(role == "Admin" ? Icons.message : Icons.notifications),
+          label: role == "Admin" ? "Pesan" : "Notifikasi",
+        ),
+        const BottomNavigationBarItem(
           icon: Icon(Icons.supervised_user_circle),
-          label: "Profile",
+          label: "Profil",
         ),
         // item ketiga
       ],
-      currentIndex: widget.selectedIndex,
-      onTap: widget.onItemTapped,
+      currentIndex: selectedIndex,
+      onTap: onItemTapped,
       showSelectedLabels: true,
       showUnselectedLabels: true,
       selectedItemColor: Colors.green,
