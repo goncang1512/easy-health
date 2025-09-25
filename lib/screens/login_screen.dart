@@ -1,7 +1,7 @@
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:easyhealth/components/button.dart';
-import 'package:easyhealth/pages/home_screen.dart';
+import 'package:easyhealth/widgets/button.dart';
+import 'package:easyhealth/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

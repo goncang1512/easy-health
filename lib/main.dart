@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:easyhealth/pages/splash_screen.dart';
+import 'package:easyhealth/screens/splash_screen.dart';
 
 Future<void> main() async {
   // Pastikan binding Flutter ready

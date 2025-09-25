@@ -1,5 +1,5 @@
-import 'package:easyhealth/components/dokter_card.dart';
-import 'package:easyhealth/pages/docter_screen.dart';
+import 'package:easyhealth/widgets/dokter_card.dart';
+import 'package:easyhealth/screens/docter_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
 

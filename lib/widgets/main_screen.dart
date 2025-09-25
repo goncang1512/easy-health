@@ -1,9 +1,9 @@
-import 'package:easyhealth/components/bottom_navigation.dart';
-import 'package:easyhealth/pages/booking_screen.dart';
-import 'package:easyhealth/pages/home_screen.dart';
-import 'package:easyhealth/pages/notif_screen.dart';
-import 'package:easyhealth/pages/profile_screen.dart';
-import 'package:easyhealth/pages/search_screen.dart';
+import 'package:easyhealth/widgets/bottom_navigation.dart';
+import 'package:easyhealth/screens/booking_screen.dart';
+import 'package:easyhealth/screens/home_screen.dart';
+import 'package:easyhealth/screens/notif_screen.dart';
+import 'package:easyhealth/screens/profile_screen.dart';
+import 'package:easyhealth/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {

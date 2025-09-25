@@ -1,5 +1,5 @@
-import 'package:easyhealth/components/main_screen.dart';
-import 'package:easyhealth/pages/search_screen.dart';
+import 'package:easyhealth/widgets/main_screen.dart';
+import 'package:easyhealth/screens/search_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
 

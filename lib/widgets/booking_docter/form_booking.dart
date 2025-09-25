@@ -1,4 +1,4 @@
-import 'package:easyhealth/components/input_field.dart';
+import 'package:easyhealth/widgets/input_field.dart';
 import 'package:easyhealth/provider/booking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

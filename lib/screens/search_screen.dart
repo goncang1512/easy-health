@@ -1,7 +1,7 @@
-import 'package:easyhealth/components/search_screen/bar_search.dart';
-import 'package:easyhealth/components/search_screen/docter_list.dart';
-import 'package:easyhealth/components/search_screen/new_hospital.dart';
-import 'package:easyhealth/components/search_screen/search_field.dart';
+import 'package:easyhealth/widgets/search_screen/bar_search.dart';
+import 'package:easyhealth/widgets/search_screen/docter_list.dart';
+import 'package:easyhealth/widgets/search_screen/new_hospital.dart';
+import 'package:easyhealth/widgets/search_screen/search_field.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {

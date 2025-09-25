@@ -1,4 +1,4 @@
-import 'package:easyhealth/pages/hospital_screen.dart';
+import 'package:easyhealth/screens/hospital_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
-import 'package:easyhealth/components/booking_docter/create_booking.dart';
-import 'package:easyhealth/components/booking_docter/docter_profile.dart';
-import 'package:easyhealth/components/booking_docter/form_booking.dart';
+import 'package:easyhealth/widgets/booking_docter/create_booking.dart';
+import 'package:easyhealth/widgets/booking_docter/docter_profile.dart';
+import 'package:easyhealth/widgets/booking_docter/form_booking.dart';
 import 'package:easyhealth/provider/booking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

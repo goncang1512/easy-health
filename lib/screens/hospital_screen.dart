@@ -1,6 +1,6 @@
-import 'package:easyhealth/components/detail_hospital/hospital_header.dart';
-import 'package:easyhealth/components/detail_hospital/tag_hospital.dart';
-import 'package:easyhealth/components/search_screen/docter_list.dart';
+import 'package:easyhealth/widgets/detail_hospital/hospital_header.dart';
+import 'package:easyhealth/widgets/detail_hospital/tag_hospital.dart';
+import 'package:easyhealth/widgets/search_screen/docter_list.dart';
 import 'package:flutter/material.dart';
 
 class HospitalScreen extends StatefulWidget {

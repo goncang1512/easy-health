@@ -1,5 +1,5 @@
-import 'package:easyhealth/components/main_screen.dart';
-import 'package:easyhealth/pages/login_screen.dart';
+import 'package:easyhealth/widgets/main_screen.dart';
+import 'package:easyhealth/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
