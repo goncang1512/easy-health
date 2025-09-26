@@ -1,6 +1,5 @@
-import 'package:easyhealth/widgets/main_screen.dart';
-import 'package:easyhealth/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,25 +20,20 @@ class _SplashScreenState extends State<SplashScreen>
 
     _textController = AnimationController(
       vsync: this,
-
       duration: const Duration(milliseconds: 1200),
     );
-
     _textController.forward();
 
     // delay → navigasi ke login
 
     Future.delayed(const Duration(seconds: 3), () {
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => auth ? MainScreen() : LoginScreen(),
-          transitionDuration: const Duration(milliseconds: 1000),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+      if (!mounted) return; // supaya aman dari use_build_context_synchronously
+
+      if (auth) {
+        context.go("/", extra: "fromSplash"); // ke Home (MainScreen)
+      } else {
+        context.go("/login", extra: "fromSplash"); // ke LoginScreen
+      }
     });
   }
 

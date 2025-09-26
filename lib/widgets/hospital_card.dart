@@ -1,6 +1,7 @@
 import 'package:easyhealth/screens/hospital_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HospitalCard extends StatelessWidget {
   final String imageUrl;
@@ -44,10 +45,7 @@ class HospitalCard extends StatelessWidget {
               // Gambar
               GestureDetector(
                 onTap: () {
-                  NavigationHelper.push(
-                    context,
-                    HospitalScreen(hospitalId: hospitalId),
-                  );
+                  context.push("/hospital/$hospitalId");
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),

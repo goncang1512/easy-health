@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AppBarSearch extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -7,9 +8,9 @@ class AppBarSearch extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Navigator.canPop(context)
+      leading: context.canPop()
           ? IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back),
             )
           : null,

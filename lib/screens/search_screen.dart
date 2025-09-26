@@ -13,12 +13,13 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchPage extends State<SearchScreen> {
-  String? keyword;
-
   @override
-  void initState() {
-    super.initState();
-    keyword = widget.keyword; // isi setelah state dibuat
+  void didUpdateWidget(covariant SearchScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.keyword != widget.keyword) {
+      // lakukan fetch baru dengan widget.keyword
+      print("Keyword berubah: ${widget.keyword}");
+    }
   }
 
   final List<Hospital> hospitals = List.generate(
@@ -49,7 +50,7 @@ class _SearchPage extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarSearch(
-        title: (keyword != null && keyword!.isNotEmpty)
+        title: (widget.keyword != null && widget.keyword!.isNotEmpty)
             ? "Hasil Pencarian"
             : "Pencarian",
       ),
@@ -57,17 +58,17 @@ class _SearchPage extends State<SearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InputSearchField(keyword: keyword),
+            InputSearchField(keyword: widget.keyword),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
               child: ListViewNewHospital(
                 hospitals: hospitals,
-                title: keyword != null && keyword!.isNotEmpty
+                title: widget.keyword != null && widget.keyword!.isNotEmpty
                     ? "Rumah Sakit"
                     : "Rumah Sakit Terbaru",
               ),
             ),
-            if (keyword != null && keyword!.isNotEmpty)
+            if (widget.keyword != null && widget.keyword!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 5,

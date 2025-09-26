@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HospitalHeader extends StatelessWidget {
   const HospitalHeader({super.key});
@@ -29,7 +30,7 @@ class HospitalHeader extends StatelessWidget {
                 children: [
                   _glassButton(
                     icon: Icons.arrow_back,
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => context.pop(),
                   ),
                   _glassButton(icon: Icons.favorite, onTap: () {}),
                 ],

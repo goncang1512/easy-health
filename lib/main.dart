@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:easyhealth/screens/splash_screen.dart';
+import "./routes.dart";
 
 Future<void> main() async {
   // Pastikan binding Flutter ready
@@ -13,15 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'EasyHealth',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // SplashScreen tetap jadi halaman awal
-      home: const SplashScreen(),
+      routerConfig: appRouter,
     );
   }
 }

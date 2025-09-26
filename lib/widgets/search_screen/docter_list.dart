@@ -1,7 +1,6 @@
 import 'package:easyhealth/widgets/dokter_card.dart';
-import 'package:easyhealth/screens/docter_screen.dart';
-import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Docter {
   final String imageUrl;
@@ -64,9 +63,7 @@ class _ListDocter extends State<ListViewDoctor> {
               name: "dr. Toto",
               hospital: "RS USU",
               specialty: "Penyakit dalam",
-              onBookTap: () => {
-                NavigationHelper.push(context, DocterScreen(docterId: h.id)),
-              },
+              onBookTap: () => {context.push("/docter/${h.id}")},
             );
           },
         ),

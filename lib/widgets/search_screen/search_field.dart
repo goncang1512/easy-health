@@ -1,7 +1,5 @@
-import 'package:easyhealth/widgets/main_screen.dart';
-import 'package:easyhealth/screens/search_screen.dart';
-import 'package:easyhealth/utils/navigation_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class InputSearchField extends StatefulWidget {
   final String? keyword;
@@ -27,13 +25,7 @@ class InputComponent extends State<InputSearchField> {
   }
 
   void _onSearch(String value) {
-    NavigationHelper.push(
-      context,
-      MainScreen(
-        index: 2,
-        screen: SearchScreen(keyword: _searchController.text),
-      ),
-    );
+    context.push("/search?keyword=$value");
   }
 
   @override

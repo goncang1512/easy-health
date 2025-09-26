@@ -3,6 +3,7 @@ import 'package:easyhealth/widgets/booking_docter/docter_profile.dart';
 import 'package:easyhealth/widgets/booking_docter/form_booking.dart';
 import 'package:easyhealth/provider/booking_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class DocterScreen extends StatefulWidget {
@@ -20,9 +21,9 @@ class _DocterPage extends State<DocterScreen> {
       providers: [ChangeNotifierProvider(create: (_) => BookingProvider())],
       child: Scaffold(
         appBar: AppBar(
-          leading: Navigator.canPop(context)
+          leading: context.canPop()
               ? IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.pop(),
                   icon: const Icon(Icons.arrow_back),
                 )
               : null,
