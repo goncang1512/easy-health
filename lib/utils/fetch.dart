@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 typedef FromJson<T> = T Function(Map<String, dynamic> json);
 
 class Fetch {
-  static const String baseUrl = "https://fakestoreapi.com";
+  static const String baseUrl = "http://10.0.2.2:3000";
   static const Map<String, String> defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -33,15 +33,26 @@ class Fetch {
     final response = await sendRequest();
 
     final statusCode = response.statusCode;
-    final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+    dynamic body;
 
+    try {
+      body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+    } catch (e) {
+      body = response.body; // fallback kalau bukan JSON
+    }
+
+    // Jika ada fromJson, langsung map body
     if (statusCode >= 200 && statusCode < 300) {
       if (fromJson != null && body != null) {
         return fromJson(body);
       }
       return body as T;
     } else {
-      throw Exception("HTTP $statusCode\n${response.body}");
+      // status error → tetap kembalikan body agar Flutter bisa baca message
+      if (fromJson != null && body != null) {
+        return fromJson(body);
+      }
+      return body as T; // body biasanya Map<String, dynamic> dari server
     }
   }
 

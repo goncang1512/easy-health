@@ -1,3 +1,5 @@
+import 'package:easyhealth/models/session_models.dart';
+import 'package:easyhealth/utils/get_session.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,29 +14,43 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _textController;
 
-  bool auth = true;
+  SessionData? auth;
 
   @override
   void initState() {
     super.initState();
-
     _textController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
     _textController.forward();
 
-    // delay → navigasi ke login
+    _initSplash();
+  }
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return; // supaya aman dari use_build_context_synchronously
+  Future<void> _initSplash() async {
+    final startTime = DateTime.now();
 
-      if (auth) {
-        context.go("/", extra: "fromSplash"); // ke Home (MainScreen)
-      } else {
-        context.go("/login", extra: "fromSplash"); // ke LoginScreen
-      }
+    // Ambil session
+    final data = await UseSession.getSession();
+
+    if (!mounted) return;
+
+    setState(() {
+      auth = data.session;
     });
+
+    // pastikan splash minimal tampil 1200ms
+    final elapsed = DateTime.now().difference(startTime);
+    final remaining = const Duration(milliseconds: 1200) - elapsed;
+    if (remaining > Duration.zero) {
+      await Future.delayed(remaining);
+    }
+
+    if (!mounted) return;
+
+    final goTo = auth != null ? "/" : "/login";
+    context.go(goTo, extra: "fromSplash");
   }
 
   @override

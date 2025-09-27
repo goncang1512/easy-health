@@ -1,7 +1,6 @@
-import 'package:easyhealth/utils/navigation_helper.dart';
+import 'package:easyhealth/widgets/auth_screen/form_login.dart';
+import 'package:easyhealth/widgets/auth_screen/top_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:easyhealth/widgets/button.dart';
-import 'package:easyhealth/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,19 +13,36 @@ class _LoginPages extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Login Screen", style: TextStyle(fontSize: 50)),
-            CustomButton(
-              text: "Login",
-              onPressed: () => {NavigationHelper.push(context, HomeScreen())},
-            ),
+            TopAuth(),
+            const SizedBox(height: 70),
+            TitlePage(),
+            const SizedBox(height: 40),
+            Center(child: FormLogin()),
           ],
         ),
       ),
+    );
+  }
+}
+
+class TitlePage extends StatelessWidget {
+  const TitlePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Login",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 35),
+        ),
+
+        Text("Masuk ke akun anda", style: TextStyle(color: Colors.grey)),
+      ],
     );
   }
 }

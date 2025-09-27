@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import "./routes.dart";
 
 Future<void> main() async {
@@ -13,6 +14,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GoRouter router = createRouter("Pacient");
+
     return MaterialApp.router(
       title: 'EasyHealth',
       debugShowCheckedModeBanner: false,
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }
