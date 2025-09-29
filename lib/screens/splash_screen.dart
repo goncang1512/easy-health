@@ -49,8 +49,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    final goTo = auth != null ? "/" : "/login";
-    context.go(goTo, extra: "fromSplash");
+    if (auth == null) {
+      context.go("/login");
+    } else {
+      context.go("/", extra: "fromSplash");
+    }
   }
 
   @override

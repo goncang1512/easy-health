@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TopAuth(),
             const SizedBox(height: 70),
             TitlePage(),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             Center(child: FormRegister()),
           ],
         ),

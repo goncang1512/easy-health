@@ -17,6 +17,7 @@ class _FormRegister extends State<FormRegister> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,24 +30,28 @@ class _FormRegister extends State<FormRegister> {
         name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
+        confirmPassword: _confirmPassword.text,
       );
 
       if (!context.mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
 
       if (response?["status"]) {
         context.go("/login");
+        messenger.hideCurrentMaterialBanner();
       }
 
       if (response?["status"] == false) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showMaterialBanner(
+        messenger.showMaterialBanner(
           MaterialBanner(
             backgroundColor: Colors.red.shade100,
-            content: Text("Registering ${response?["message"]}"),
+            content: Text(
+              "Registering ${response?["message"]}",
+              textAlign: TextAlign.center,
+            ),
             actions: [
               TextButton(
-                onPressed: () =>
-                    ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+                onPressed: () => messenger.hideCurrentMaterialBanner(),
                 child: const Text('Tutup'),
               ),
             ],
@@ -107,6 +112,23 @@ class _FormRegister extends State<FormRegister> {
                 return null;
               },
             ),
+            const SizedBox(height: 10),
+            TextFieldLogin(
+              controller: _confirmPassword,
+              label: "Confirm Password",
+              placeholder: "*******",
+              icon: Icons.lock,
+              type: "password",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter your confirmation password";
+                }
+                if (value.length < 6) {
+                  return "Password must be at least 6 characters";
+                }
+                return null;
+              },
+            ),
 
             const SizedBox(height: 20),
 
@@ -149,7 +171,7 @@ class _FormRegister extends State<FormRegister> {
                     context.push("/login");
                   },
                   child: Text(
-                    "Daftar",
+                    "Masuk",
                     style: TextStyle(color: Colors.green, fontSize: 16),
                   ),
                 ),

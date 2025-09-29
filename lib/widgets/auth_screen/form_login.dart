@@ -31,16 +31,18 @@ class _FormLogin extends State<FormLogin> {
       );
 
       if (!context.mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
 
       if (response?["status"]) {
         await PrefsService.saveToken(response?["result"]["token"]);
         // ignore: use_build_context_synchronously
         context.go("/");
+        messenger.hideCurrentMaterialBanner();
       }
 
       if (response?["status"] == false) {
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showMaterialBanner(
+        messenger.showMaterialBanner(
           MaterialBanner(
             backgroundColor: Colors.red.shade100,
             content: Text("Registering ${response?["message"]}"),

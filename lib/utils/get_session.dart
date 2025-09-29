@@ -17,6 +17,10 @@ class UseSession {
       headers: {"Authorization": "Bearer $token"},
     );
 
+    if (!data["status"]) {
+      return null;
+    }
+
     return UserSession.fromMap(
       data["result"]["user"],
       data["result"]["session"],

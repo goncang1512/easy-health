@@ -14,6 +14,7 @@ class AuthProvider extends ChangeNotifier {
     required String name,
     required String email,
     required String password,
+    required String confirmPassword,
   }) async {
     final response = await HTTP.post(
       "/api/sign/register",
@@ -21,6 +22,7 @@ class AuthProvider extends ChangeNotifier {
         "name": name.trim(),
         "email": email.trim(),
         "password": password.trim(),
+        "confirmPassword": confirmPassword.trim(),
       },
     );
     _loading = false;
