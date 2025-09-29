@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _textController;
 
-  SessionData? auth;
+  UserSession? auth;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     setState(() {
-      auth = data.session;
+      auth = data;
     });
 
     // pastikan splash minimal tampil 1200ms

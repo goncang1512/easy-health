@@ -58,10 +58,13 @@ class UserSession {
 
   UserSession({required this.user, required this.session});
 
-  factory UserSession.fromMap(Map<String, dynamic> map) {
+  factory UserSession.fromMap(
+    Map<String, dynamic> user,
+    Map<String, dynamic> session,
+  ) {
     return UserSession(
-      user: User.fromMap(map['result']["user"]),
-      session: SessionData.fromMap(map['result']["session"]),
+      user: User.fromMap(user),
+      session: SessionData.fromMap(session),
     );
   }
 

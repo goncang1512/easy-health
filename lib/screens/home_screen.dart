@@ -23,7 +23,7 @@ class _HomePage extends State<HomeScreen> {
     final data = await UseSession.getSession();
 
     setState(() {
-      name = data.user.name;
+      name = data?.user.name;
     });
   }
 

@@ -1,20 +1,20 @@
 // import 'package:easyhealth/widgets/auth_screen/auth_provider.dart';
 import 'package:easyhealth/provider/auth_provider.dart';
-import 'package:easyhealth/utils/secure_storage.dart';
 import 'package:easyhealth/widgets/auth_screen/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class FormLogin extends StatefulWidget {
-  const FormLogin({super.key});
+class FormRegister extends StatefulWidget {
+  const FormRegister({super.key});
 
   @override
-  State<FormLogin> createState() => _FormLogin();
+  State<FormRegister> createState() => _FormRegister();
 }
 
-class _FormLogin extends State<FormLogin> {
+class _FormRegister extends State<FormRegister> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -25,7 +25,8 @@ class _FormLogin extends State<FormLogin> {
     void onLogin() async {
       if (!_formKey.currentState!.validate()) return;
 
-      final response = await provider.login(
+      final response = await provider.register(
+        name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -33,9 +34,7 @@ class _FormLogin extends State<FormLogin> {
       if (!context.mounted) return;
 
       if (response?["status"]) {
-        await PrefsService.saveToken(response?["result"]["token"]);
-        // ignore: use_build_context_synchronously
-        context.go("/");
+        context.go("/login");
       }
 
       if (response?["status"] == false) {
@@ -63,6 +62,19 @@ class _FormLogin extends State<FormLogin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            TextFieldLogin(
+              controller: _nameController,
+              label: "Nama",
+              placeholder: "Masukkan nama",
+              icon: Icons.person,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter your name";
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 10),
             TextFieldLogin(
               controller: _emailController,
               label: "Email",
@@ -114,7 +126,7 @@ class _FormLogin extends State<FormLogin> {
                   elevation: 4,
                 ),
                 child: const Text(
-                  "Login",
+                  "Daftar",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -128,13 +140,13 @@ class _FormLogin extends State<FormLogin> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Belum punya akun?", style: TextStyle(fontSize: 16)),
+                Text("Sudah punya akun?", style: TextStyle(fontSize: 16)),
 
                 const SizedBox(width: 5),
 
                 GestureDetector(
                   onTap: () {
-                    context.push("/register");
+                    context.push("/login");
                   },
                   child: Text(
                     "Daftar",

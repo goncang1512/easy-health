@@ -10,43 +10,34 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> register({
+  Future register({
     required String name,
     required String email,
     required String password,
   }) async {
-    _loading = true;
-    try {
-      final response = await Fetch.post(
-        "/api/sign/register",
-        body: {
-          "name": name.trim(),
-          "email": email.trim(),
-          "password": password.trim(),
-        },
-      );
+    final response = await HTTP.post(
+      "/api/sign/register",
+      body: {
+        "name": name.trim(),
+        "email": email.trim(),
+        "password": password.trim(),
+      },
+    );
+    _loading = false;
 
-      debugPrint("Register response: $response");
-      return null; // null artinya berhasil
-    } catch (e) {
-      debugPrint("Register error: $e");
-      return e.toString(); // kembalikan error
-    } finally {
-      _loading = false;
-    }
+    return response;
   }
 
-  Future<Map<String, dynamic>?> login({
-    required String email,
-    required String password,
-  }) async {
+  Future login({required String email, required String password}) async {
     _loading = true;
-    final response = await Fetch.post(
+
+    final data = await HTTP.post(
       "/api/sign/login",
       body: {"email": email.trim(), "password": password.trim()},
     );
+
     _loading = false;
-    // Kalau status false, kembalikan null atau throw error
-    return response; // null artinya berhasil
+
+    return data;
   }
 }

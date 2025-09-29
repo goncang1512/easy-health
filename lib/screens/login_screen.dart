@@ -2,14 +2,9 @@ import 'package:easyhealth/widgets/auth_screen/form_login.dart';
 import 'package:easyhealth/widgets/auth_screen/top_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginPages();
-}
-
-class _LoginPages extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
