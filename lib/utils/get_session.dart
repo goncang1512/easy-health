@@ -1,8 +1,10 @@
 import 'package:easyhealth/models/session_models.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/fetch.dart';
 import 'package:easyhealth/utils/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class UseSession {
   static Future<UserSession?> getSession() async {
@@ -28,7 +30,8 @@ class UseSession {
   }
 
   static void logOut(BuildContext context) async {
-    await PrefsService.deleteToken();
+    await context.read<SessionManager>().clearSession();
+    // ignore: use_build_context_synchronously
     context.go("/login");
   }
 }

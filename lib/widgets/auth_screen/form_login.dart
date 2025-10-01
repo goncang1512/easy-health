@@ -1,5 +1,8 @@
 // import 'package:easyhealth/widgets/auth_screen/auth_provider.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:easyhealth/provider/auth_provider.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/secure_storage.dart';
 import 'package:easyhealth/widgets/auth_screen/textfield.dart';
 import 'package:flutter/material.dart';
@@ -35,13 +38,12 @@ class _FormLogin extends State<FormLogin> {
 
       if (response?["status"]) {
         await PrefsService.saveToken(response?["result"]["token"]);
-        // ignore: use_build_context_synchronously
-        context.go("/");
+        await context.read<SessionManager>().loadSession();
         messenger.hideCurrentMaterialBanner();
+        context.go("/");
       }
 
       if (response?["status"] == false) {
-        // ignore: use_build_context_synchronously
         messenger.showMaterialBanner(
           MaterialBanner(
             backgroundColor: Colors.red.shade100,

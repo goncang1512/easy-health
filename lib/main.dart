@@ -1,12 +1,17 @@
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import "./routes.dart";
+import 'package:provider/provider.dart';
+import './routes.dart';
 
 Future<void> main() async {
-  // Pastikan binding Flutter ready
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => SessionManager()..loadSession(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,16 +19,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GoRouter router = createRouter("Pacient");
+    return Consumer<SessionManager>(
+      builder: (context, sessionManager, _) {
+        final router = createRouter(
+          sessionManager.session?.user.role ?? "Pacient",
+        );
 
-    return MaterialApp.router(
-      title: 'EasyHealth',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      routerConfig: router,
+        return MaterialApp.router(
+          title: 'EasyHealth',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          routerConfig: router,
+        );
+      },
     );
   }
 }

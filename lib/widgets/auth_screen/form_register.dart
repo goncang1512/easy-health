@@ -37,8 +37,8 @@ class _FormRegister extends State<FormRegister> {
       final messenger = ScaffoldMessenger.of(context);
 
       if (response?["status"]) {
-        context.go("/login");
         messenger.hideCurrentMaterialBanner();
+        context.go("/login");
       }
 
       if (response?["status"] == false) {
