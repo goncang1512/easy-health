@@ -22,7 +22,7 @@ List<StatefulShellBranch> buildBranches(String role) {
       routes: [
         GoRoute(
           name: "Home",
-          path: "/",
+          path: "/home",
           builder: (context, state) => HomeScreen(),
         ),
       ],

@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (auth == null) {
       context.go("/login");
     } else {
-      context.go("/", extra: "fromSplash");
+      context.go("/home", extra: "fromSplash");
     }
   }
 

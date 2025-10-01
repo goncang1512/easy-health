@@ -33,7 +33,7 @@ class ButtonNavBar extends StatelessWidget {
         if (navigationShell != null) {
           navigationShell.goBranch(index);
         } else {
-          context.go("/");
+          context.go("/home");
         }
       },
       showSelectedLabels: true,
