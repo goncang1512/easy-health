@@ -38,10 +38,18 @@ class TopAuth extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.medical_services,
-                color: Colors.green,
-                size: 50,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981), // hijau seperti gambar
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Image.asset(
+                  "images/stetoscope.png",
+                  width: 30,
+                  height: 30,
+                  color: Colors.white, // kalau mau icon jadi putih
+                ),
               ),
             ),
           ),
