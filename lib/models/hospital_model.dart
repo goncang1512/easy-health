@@ -4,7 +4,7 @@ class HospitalModel {
   final String? address;
   final String? numberPhone;
   final String? email;
-  final String? adminId;
+  final String? userId;
   final String? open;
   final String? room;
   final String? image;
@@ -15,7 +15,7 @@ class HospitalModel {
     this.name,
     this.numberPhone,
     this.email,
-    this.adminId,
+    this.userId,
     this.open,
     this.room,
     this.image,
@@ -29,7 +29,7 @@ class HospitalModel {
       name: json["name"] ?? "",
       numberPhone: json["numberPhone"] ?? "",
       email: json["email"] ?? "",
-      adminId: json["adminId"] ?? "",
+      userId: json["userId"] ?? "",
       open: json["open"] ?? "",
       room: json["room"] ?? "",
       image: json['image'] ?? "",

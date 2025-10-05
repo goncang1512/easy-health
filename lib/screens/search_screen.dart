@@ -16,41 +16,22 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchPage extends State<SearchScreen> {
   List<HospitalModel> hospitals = [];
-  bool _isLoading = false;
-
-  @override
-  void didUpdateWidget(covariant SearchScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.keyword != widget.keyword) {
-      // lakukan fetch baru dengan widget.keyword
-      _fetchData(widget.keyword);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-
-    _fetchData(widget.keyword);
   }
 
-  Future<void> _fetchData(String? keyword) async {
-    setState(() => _isLoading = true);
-
+  Future<List<HospitalModel>> getHospital(String? keyword) async {
     final String path = keyword != null
         ? "/api/hospital?keyword=$keyword"
         : "/api/hospital";
 
     final data = await HTTP.get(path);
 
-    if (mounted) {
-      setState(() {
-        hospitals = (data["result"] as List<dynamic>)
-            .map((item) => HospitalModel.fromJson(item as Map<String, dynamic>))
-            .toList();
-        _isLoading = false;
-      });
-    }
+    return (data["result"] as List<dynamic>)
+        .map((item) => HospitalModel.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   final List<Docter> docters = List.generate(
@@ -76,7 +57,7 @@ class _SearchPage extends State<SearchScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await _fetchData(widget.keyword);
+          setState(() {});
         },
         child: SingleChildScrollView(
           child: Column(
@@ -88,11 +69,27 @@ class _SearchPage extends State<SearchScreen> {
                   vertical: 16,
                   horizontal: 12,
                 ),
-                child: ListViewNewHospital(
-                  hospitals: hospitals,
-                  title: widget.keyword != null && widget.keyword!.isNotEmpty
-                      ? "Rumah Sakit"
-                      : "Rumah Sakit Terbaru",
+                child: FutureBuilder(
+                  future: getHospital(widget.keyword),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text("Tidak ada data"));
+                    }
+
+                    final hospitals =
+                        snapshot.data!; // ✅ hasil dari return _fetchData
+                    return ListViewNewHospital(
+                      hospitals: hospitals,
+                      title:
+                          widget.keyword != null && widget.keyword!.isNotEmpty
+                          ? "Rumah Sakit"
+                          : "Rumah Sakit Terbaru",
+                    );
+                  },
                 ),
               ),
               if (widget.keyword != null && widget.keyword!.isNotEmpty)

@@ -7,12 +7,18 @@ class CustomInputField extends StatelessWidget {
   final TextInputType keyboardType;
   final int maxLines;
   final VoidCallback? onTap;
+  final FormFieldValidator<String>? validator;
   final bool readOnly;
+  final bool? filled;
+  final Color? fillColor;
 
   const CustomInputField({
     super.key,
     required this.label,
     required this.hint,
+    this.filled,
+    this.validator,
+    this.fillColor,
     this.controller,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
@@ -32,7 +38,8 @@ class CustomInputField extends StatelessWidget {
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 6),
-          TextField(
+          TextFormField(
+            validator: validator,
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
@@ -40,6 +47,8 @@ class CustomInputField extends StatelessWidget {
             onTap: onTap,
             decoration: InputDecoration(
               hintText: hint,
+              filled: filled, // wajib true agar fillColor aktif
+              fillColor: fillColor,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 14,

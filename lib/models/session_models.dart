@@ -66,19 +66,42 @@ class SessionData {
   }
 }
 
+class HospitalData {
+  final String id;
+  final String name;
+  final String address;
+
+  const HospitalData({
+    required this.id,
+    required this.name,
+    required this.address,
+  });
+
+  factory HospitalData.fromMap(Map<String, dynamic> map) {
+    return HospitalData(
+      id: map['id'],
+      name: map['name'],
+      address: map['address'],
+    );
+  }
+}
+
 class UserSession {
   final User user;
   final SessionData session;
+  final HospitalData? hospital;
 
-  UserSession({required this.user, required this.session});
+  UserSession({required this.user, required this.session, this.hospital});
 
   factory UserSession.fromMap(
     Map<String, dynamic> user,
     Map<String, dynamic> session,
+    Map<String, dynamic>? hospital,
   ) {
     return UserSession(
       user: User.fromMap(user),
       session: SessionData.fromMap(session),
+      hospital: hospital != null ? HospitalData.fromMap(hospital) : null,
     );
   }
 

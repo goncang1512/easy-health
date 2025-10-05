@@ -45,7 +45,7 @@ class TopAuth extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.asset(
-                  "images/stetoscope.png",
+                  "assets/images/stetoscope.png",
                   width: 30,
                   height: 30,
                   color: Colors.white, // kalau mau icon jadi putih

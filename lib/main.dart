@@ -1,14 +1,18 @@
+import 'package:easyhealth/provider/navigation_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './routes.dart';
+import 'config/routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => SessionManager()..loadSession(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SessionManager()..loadSession()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+      ],
       child: const MyApp(),
     ),
   );

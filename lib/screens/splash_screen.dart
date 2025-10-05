@@ -1,7 +1,7 @@
-import 'package:easyhealth/models/session_models.dart';
-import 'package:easyhealth/utils/get_session.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,8 +13,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _textController;
-
-  UserSession? auth;
 
   @override
   void initState() {
@@ -31,14 +29,9 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _initSplash() async {
     final startTime = DateTime.now();
 
-    // Ambil session
-    final data = await UseSession.getSession();
+    final sessionManager = context.read<SessionManager>();
 
-    if (!mounted) return;
-
-    setState(() {
-      auth = data;
-    });
+    final session = sessionManager.session;
 
     // pastikan splash minimal tampil 1200ms
     final elapsed = DateTime.now().difference(startTime);
@@ -49,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    if (auth == null) {
+    if (session == null) {
       context.go("/login");
     } else {
       context.go("/home", extra: "fromSplash");
@@ -107,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Image.asset(
-                    "images/stetoscope.png",
+                    "assets/images/stetoscope.png",
                     width: 60,
                     height: 60,
                     color: Colors.white, // kalau mau icon jadi putih
@@ -137,8 +130,12 @@ class _SplashScreenState extends State<SplashScreen>
             right: 0,
             child: Center(
               child: Text(
-                "v1.2",
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                "v1.0",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),

@@ -21,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TitlePage(),
             const SizedBox(height: 20),
             Center(child: FormRegister()),
+            const SizedBox(height: 70),
           ],
         ),
       ),
