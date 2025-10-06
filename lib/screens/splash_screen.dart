@@ -31,6 +31,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     final sessionManager = context.read<SessionManager>();
 
+    while (sessionManager.isLoading) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
     final session = sessionManager.session;
 
     // pastikan splash minimal tampil 1200ms

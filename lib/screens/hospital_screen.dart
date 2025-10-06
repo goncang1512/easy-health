@@ -1,3 +1,5 @@
+import 'package:easyhealth/models/hospital_model.dart';
+import 'package:easyhealth/utils/fetch.dart';
 import 'package:easyhealth/widgets/detail_hospital/hospital_header.dart';
 import 'package:easyhealth/widgets/detail_hospital/tag_hospital.dart';
 import 'package:easyhealth/widgets/search_screen/docter_list.dart';
@@ -25,46 +27,67 @@ class _HospitalPage extends State<HospitalScreen> {
     ),
   );
 
+  Future<HospitalModel> getHospitalDetail() async {
+    final data = await HTTP.get("/api/hospital/detail/${widget.hospitalId}");
+
+    return HospitalModel.fromJson(data['result']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const HospitalHeader(),
-            TagHospital(),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(
-                vertical: 20,
-                horizontal: 12,
-              ),
-              child: ListViewDoctor(
-                docters: docters,
-                title: "Daftar Dokter",
-                showHospital: false,
-              ),
-              // child: Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Text(
-              //       "Daftar Dokter",
-              //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              //     ),
-              //     DoctorCard(
-              //       showHospital: false,
-              //       onBookTap: () => {},
-              //       imageUrl:
-              //           "https://i.pinimg.com/736x/51/6b/27/516b27678c97b8a5cfd5fe92c3dae7ed.jpg",
-              //       name: "dr. Marpaung",
-              //       specialty: "Spesialis THT",
-              //       hospital: "RS Metamedika",
-              //     ),
-              //   ],
-              // ),
+      body: FutureBuilder<HospitalModel>(
+        future: getHospitalDetail(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text("Tidak ada data"));
+          }
+
+          final HospitalModel? hospital = snapshot.data;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                HospitalHeader(hospital: hospital),
+                TagHospital(badroom: hospital?.room ?? 0),
+                Padding(
+                  padding: EdgeInsetsGeometry.symmetric(
+                    vertical: 20,
+                    horizontal: 12,
+                  ),
+                  child: ListViewDoctor(
+                    docters: docters,
+                    title: "Daftar Dokter",
+                    showHospital: false,
+                  ),
+                  // child: Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Daftar Dokter",
+                  //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  //     ),
+                  //     DoctorCard(
+                  //       showHospital: false,
+                  //       onBookTap: () => {},
+                  //       imageUrl:
+                  //           "https://i.pinimg.com/736x/51/6b/27/516b27678c97b8a5cfd5fe92c3dae7ed.jpg",
+                  //       name: "dr. Marpaung",
+                  //       specialty: "Spesialis THT",
+                  //       hospital: "RS Metamedika",
+                  //     ),
+                  //   ],
+                  // ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

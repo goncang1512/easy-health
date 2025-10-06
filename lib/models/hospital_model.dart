@@ -6,7 +6,7 @@ class HospitalModel {
   final String? email;
   final String? userId;
   final String? open;
-  final String? room;
+  final int? room;
   final String? image;
 
   const HospitalModel({
@@ -31,8 +31,8 @@ class HospitalModel {
       email: json["email"] ?? "",
       userId: json["userId"] ?? "",
       open: json["open"] ?? "",
-      room: json["room"] ?? "",
-      image: json['image'] ?? "",
+      room: json["room"],
+      image: json['image'],
     );
   }
 }

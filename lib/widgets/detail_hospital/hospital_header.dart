@@ -1,9 +1,11 @@
 import 'dart:ui';
+import 'package:easyhealth/models/hospital_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HospitalHeader extends StatelessWidget {
-  const HospitalHeader({super.key});
+  final HospitalModel? hospital;
+  const HospitalHeader({super.key, this.hospital});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,8 @@ class HospitalHeader extends StatelessWidget {
           Positioned.fill(
             bottom: 1,
             child: Image.network(
-              "https://i.pinimg.com/1200x/32/26/fa/3226fae8c2fd31e1c49f441c36ed100c.jpg",
+              hospital?.image ??
+                  "https://i.pinimg.com/1200x/32/26/fa/3226fae8c2fd31e1c49f441c36ed100c.jpg",
               fit: BoxFit.cover,
             ),
           ),
@@ -60,8 +63,8 @@ class HospitalHeader extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
-                            "RS USU",
+                          Text(
+                            hospital?.name ?? "",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -69,7 +72,7 @@ class HospitalHeader extends StatelessWidget {
                             ),
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.location_on,
                                 size: 16,
@@ -78,7 +81,7 @@ class HospitalHeader extends StatelessWidget {
                               SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  "Jl. Dr. Mansyur",
+                                  hospital?.address ?? "",
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: Colors.black87,

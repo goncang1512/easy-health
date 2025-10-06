@@ -30,28 +30,36 @@ class _DashboardScreen extends State<DashboardScreen> {
             child: SizedBox(
               width: 40,
               height: 40,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  context.push(
-                    "/register/hospital/${data.session?.hospital?.id}",
-                  );
-                },
-              ),
+              child: data.session?.hospital != null
+                  ? IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        context.push(
+                          "/register/hospital/${data.session?.hospital?.id}",
+                        );
+                      },
+                    )
+                  : null,
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFF10B981),
-        foregroundColor: Colors.white,
-        onPressed: () {
-          context.push("/add-docter/${data.session?.hospital?.id}");
-        },
-        child: const Icon(Icons.add, fontWeight: FontWeight.bold, size: 30),
-      ),
+      floatingActionButton: data.session?.hospital != null
+          ? FloatingActionButton(
+              backgroundColor: Color(0xFF10B981),
+              foregroundColor: Colors.white,
+              onPressed: () {
+                context.push("/add-docter/${data.session?.hospital?.id}");
+              },
+              child: const Icon(
+                Icons.add,
+                fontWeight: FontWeight.bold,
+                size: 30,
+              ),
+            )
+          : null,
       body: data.session?.user.role == "Admin" && data.session?.hospital == null
           ? Center(
               child: ElevatedButton(

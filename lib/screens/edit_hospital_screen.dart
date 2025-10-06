@@ -1,6 +1,7 @@
 import 'package:easyhealth/provider/hospital_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/widgets/register_hospital/form_register_hospital.dart';
+import 'package:easyhealth/widgets/register_hospital/more_list.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +23,13 @@ class _EditHospitalScreen extends State<EditHospitalScreen> {
       create: (_) => HospitalProvider(session: data.session),
       child: Scaffold(
         appBar: AppBar(
+          actions: [MoreList()],
           leading: IconButton(
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
           ),
           title: Text(
-            "Tambahkan Dokter",
+            "Edit Rumah Sakit",
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           centerTitle: true,

@@ -1,8 +1,8 @@
 import 'package:easyhealth/provider/hospital_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/widgets/input_field.dart';
+import 'package:easyhealth/widgets/register_hospital/upload_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class FormRegisterHospital extends StatefulWidget {
@@ -69,6 +69,11 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
             label: "Ruangan",
             hint: "100",
           ),
+
+          const SizedBox(height: 10),
+
+          ImageUploadPreview(),
+
           const SizedBox(height: 10),
 
           SizedBox(
@@ -78,15 +83,17 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
                   ? null
                   : () async {
                       if (widget.method == "CREATE") {
-                        await regis.registerHospital();
-                        await context.read<SessionManager>().loadSession();
+                        bool res = await regis.registerHospital();
+                        if (res) {
+                          await context.read<SessionManager>().loadSession();
+                        }
                       } else {
                         bool res = await regis.updateHospital(
                           widget.hospitalId.toString(),
                         );
 
                         if (res) {
-                          context.go("/home");
+                          await context.read<SessionManager>().loadSession();
                         }
                       }
                     },
@@ -123,6 +130,7 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
               ),
             ),
           ),
+          const SizedBox(height: 50),
         ],
       ),
     );

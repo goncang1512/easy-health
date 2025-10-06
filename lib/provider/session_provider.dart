@@ -6,11 +6,23 @@ import 'package:easyhealth/utils/get_session.dart';
 
 class SessionManager extends ChangeNotifier {
   UserSession? _session;
+  bool _isLoading = false;
+
   UserSession? get session => _session;
+  bool get isLoading => _isLoading;
 
   Future<void> loadSession() async {
-    _session = await UseSession.getSession();
+    _isLoading = true;
     notifyListeners();
+
+    try {
+      _session = await UseSession.getSession();
+    } catch (e) {
+      _session = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> clearSession() async {
