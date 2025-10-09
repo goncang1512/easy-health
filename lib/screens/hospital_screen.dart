@@ -1,3 +1,4 @@
+import 'package:easyhealth/models/docter_model.dart';
 import 'package:easyhealth/models/hospital_model.dart';
 import 'package:easyhealth/utils/fetch.dart';
 import 'package:easyhealth/widgets/detail_hospital/hospital_header.dart';
@@ -14,30 +15,22 @@ class HospitalScreen extends StatefulWidget {
 }
 
 class _HospitalPage extends State<HospitalScreen> {
-  final List<Docter> docters = List.generate(
-    5,
-    (i) => Docter(
-      id: "${i + 1}",
-      imageUrl:
-          'https://i.pinimg.com/736x/c2/db/2d/c2db2da630a1d117a3e1297ed7fd9b96.jpg',
-      name: 'RS Contoh #${i + 1}',
-      address: 'Kota ${i + 1}',
-      hospital: "RS ${i + 1}",
-      specialty: "Spesialis ${i + 1}",
-    ),
-  );
-
-  Future<HospitalModel> getHospitalDetail() async {
+  Future<Map<String, dynamic>> getHospitalDetail() async {
     final data = await HTTP.get("/api/hospital/detail/${widget.hospitalId}");
 
-    return HospitalModel.fromJson(data['result']);
+    final hospital = HospitalModel.fromJson(data['result']);
+    final docters = (data["result"]["docter"] as List<dynamic>)
+        .map((item) => DocterModel.fromJson(item))
+        .toList();
+
+    return {"hospital": hospital, "docters": docters};
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder<HospitalModel>(
+      body: FutureBuilder<Map<String, dynamic>>(
         future: getHospitalDetail(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -48,7 +41,8 @@ class _HospitalPage extends State<HospitalScreen> {
             return const Center(child: Text("Tidak ada data"));
           }
 
-          final HospitalModel? hospital = snapshot.data;
+          final HospitalModel? hospital = snapshot.data!["hospital"];
+          final List<DocterModel> docters = snapshot.data!["docters"];
 
           return SingleChildScrollView(
             child: Column(
@@ -65,24 +59,6 @@ class _HospitalPage extends State<HospitalScreen> {
                     title: "Daftar Dokter",
                     showHospital: false,
                   ),
-                  // child: Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Text(
-                  //       "Daftar Dokter",
-                  //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  //     ),
-                  //     DoctorCard(
-                  //       showHospital: false,
-                  //       onBookTap: () => {},
-                  //       imageUrl:
-                  //           "https://i.pinimg.com/736x/51/6b/27/516b27678c97b8a5cfd5fe92c3dae7ed.jpg",
-                  //       name: "dr. Marpaung",
-                  //       specialty: "Spesialis THT",
-                  //       hospital: "RS Metamedika",
-                  //     ),
-                  //   ],
-                  // ),
                 ),
               ],
             ),

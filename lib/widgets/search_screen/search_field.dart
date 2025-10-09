@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// Global ValueNotifier untuk komunikasi antar widget
+final searchController = ValueNotifier<String>('');
+
 class InputSearchField extends StatefulWidget {
   final String? keyword;
   const InputSearchField({super.key, this.keyword});
@@ -11,17 +14,30 @@ class InputSearchField extends StatefulWidget {
 
 class InputComponent extends State<InputSearchField> {
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose(); // jangan lupa dispose biar gak memory leak
-    super.dispose();
-  }
+  late final VoidCallback _listener;
 
   @override
   void initState() {
     super.initState();
     _searchController.text = widget.keyword ?? "";
+
+    // Buat listener yang bisa dihapus nanti
+    _listener = () {
+      if (searchController.value == 'clear') {
+        _searchController.clear();
+        // setelah clear, reset value supaya tidak terus trigger
+        searchController.value = '';
+      }
+    };
+
+    searchController.addListener(_listener);
+  }
+
+  @override
+  void dispose() {
+    searchController.removeListener(_listener);
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _onSearch(String value) {

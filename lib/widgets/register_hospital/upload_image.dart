@@ -1,11 +1,17 @@
 import 'dart:io';
-import 'package:easyhealth/provider/hospital_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 class ImageUploadPreview extends StatefulWidget {
-  const ImageUploadPreview({super.key});
+  final void Function(File) setImage;
+  final String? imageUrl;
+  final String placeholder;
+  const ImageUploadPreview({
+    super.key,
+    required this.setImage,
+    this.imageUrl,
+    required this.placeholder,
+  });
 
   @override
   State<ImageUploadPreview> createState() => _ImageUploadPreviewState();
@@ -16,12 +22,11 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final provider = context.read<HospitalProvider>();
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         File file = File(pickedFile.path);
-        provider.setImage(file);
+        widget.setImage(file);
         _selectedImage = file;
       });
     }
@@ -29,7 +34,6 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final hospitalProvider = context.watch<HospitalProvider>();
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
@@ -47,13 +51,13 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: _buildImagePreview(hospitalProvider),
+          child: _buildImagePreview(widget.imageUrl),
         ),
       ),
     );
   }
 
-  Widget _buildImagePreview(HospitalProvider hospitalProvider) {
+  Widget _buildImagePreview(String? imageUrl) {
     // 1️⃣ Jika user baru saja pilih gambar (local file)
     if (_selectedImage != null) {
       return Image.file(
@@ -65,10 +69,9 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
     }
 
     // 2️⃣ Jika ada gambar dari Cloudinary / server
-    if (hospitalProvider.imageUrl != null &&
-        hospitalProvider.imageUrl!.isNotEmpty) {
+    if (imageUrl != null && imageUrl.isNotEmpty) {
       return Image.network(
-        hospitalProvider.imageUrl!,
+        imageUrl,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
@@ -94,7 +97,7 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
           ),
           const SizedBox(height: 8),
           Text(
-            "Tap to upload image",
+            widget.placeholder,
             style: TextStyle(color: Colors.grey.shade800),
           ),
         ],

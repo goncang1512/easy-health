@@ -1,28 +1,11 @@
+import 'package:easyhealth/models/docter_model.dart';
 import 'package:easyhealth/widgets/dokter_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class Docter {
-  final String imageUrl;
-  final String name;
-  final String address;
-  final String hospital;
-  final String specialty;
-  final String id;
-
-  Docter({
-    required this.id,
-    required this.imageUrl,
-    required this.name,
-    required this.address,
-    required this.hospital,
-    required this.specialty,
-  });
-}
-
 class ListViewDoctor extends StatefulWidget {
   final String? keyword;
-  final List<Docter> docters;
+  final List<DocterModel> docters;
   final String title;
   final bool showHospital;
 
@@ -56,14 +39,14 @@ class _ListDocter extends State<ListViewDoctor> {
               NeverScrollableScrollPhysics(), // <--- biar scroll hanya parent
           itemCount: widget.docters.length,
           itemBuilder: (context, index) {
-            final h = widget.docters[index];
+            final doctor = widget.docters[index];
             return DoctorCard(
               showHospital: widget.showHospital,
-              imageUrl: h.imageUrl,
-              name: "dr. Toto",
-              hospital: "RS USU",
-              specialty: "Penyakit dalam",
-              onBookTap: () => {context.push("/docter/${h.id}")},
+              imageUrl: doctor.photoUrl ?? "",
+              name: doctor.name,
+              specialty: doctor.specialits,
+              hospital: doctor.hospital?.name ?? "",
+              onBookTap: () => context.push("/docter/${doctor.id}"),
             );
           },
         ),

@@ -1,19 +1,17 @@
+import 'package:easyhealth/config/branch_app.dart';
 import 'package:easyhealth/provider/auth_provider.dart';
+import 'package:easyhealth/provider/booking_provider.dart';
+import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/provider/navigation_provider.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/add_docter_screen.dart';
-import 'package:easyhealth/screens/booking_screen.dart';
-import 'package:easyhealth/screens/chatlist_screen.dart';
-import 'package:easyhealth/screens/dashboard_screen.dart';
 import 'package:easyhealth/screens/docter_screen.dart';
+import 'package:easyhealth/screens/edit_docter_screen.dart';
 import 'package:easyhealth/screens/edit_hospital_screen.dart';
-import 'package:easyhealth/screens/home_screen.dart';
 import 'package:easyhealth/screens/hospital_screen.dart';
 import 'package:easyhealth/screens/login_screen.dart';
-import 'package:easyhealth/screens/notif_screen.dart';
-import 'package:easyhealth/screens/profile_screen.dart';
 import 'package:easyhealth/screens/register_hospital.dart';
 import 'package:easyhealth/screens/register_screen.dart';
-import 'package:easyhealth/screens/search_screen.dart';
 import 'package:easyhealth/screens/splash_screen.dart';
 import 'package:easyhealth/widgets/bottom_navigation_shell.dart';
 import 'package:flutter/material.dart';
@@ -27,73 +25,6 @@ class AppRoutes {
   static const String favorites = '/booking';
   static const String profile = '/profile';
   static const String details = '/notifications';
-}
-
-List<StatefulShellBranch> buildBranches(String role) {
-  return [
-    // Home, Booking, Searching, dll (tetap)
-    StatefulShellBranch(
-      routes: [
-        GoRoute(
-          name: "Home",
-          path: "/home",
-          builder: (context, state) {
-            if (role == "Admin") {
-              return DashboardScreen();
-            } else {
-              return HomeScreen();
-            }
-          },
-        ),
-      ],
-    ),
-    StatefulShellBranch(
-      routes: [
-        GoRoute(
-          name: "Booking",
-          path: '/booking',
-          builder: (context, state) => const BookingScreen(),
-        ),
-      ],
-    ),
-    StatefulShellBranch(
-      routes: [
-        GoRoute(
-          name: role == "Admin" ? "Pesan" : "Searching",
-          path: role == "Admin" ? "/message" : '/search',
-          builder: (context, state) {
-            if (role == "Admin") {
-              return ChatListScreen();
-            } else {
-              final keyword = state.uri.queryParameters['keyword'];
-
-              return SearchScreen(keyword: keyword);
-            }
-          },
-        ),
-      ],
-    ),
-    StatefulShellBranch(
-      routes: [
-        GoRoute(
-          name: "Notification",
-          path: '/notification',
-          builder: (c, s) {
-            return const NotifScreen();
-          },
-        ),
-      ],
-    ),
-    StatefulShellBranch(
-      routes: [
-        GoRoute(
-          name: "Profile",
-          path: '/profile',
-          builder: (context, state) => const ProfileScreen(),
-        ),
-      ],
-    ),
-  ];
 }
 
 GoRouter createRouter(String role) {
@@ -173,7 +104,10 @@ GoRouter createRouter(String role) {
         builder: (context, state) {
           final String docterId = state.pathParameters["docter_id"]!;
 
-          return DocterScreen(docterId: docterId);
+          return ChangeNotifierProvider(
+            create: (_) => BookingProvider(docterId: docterId),
+            child: DocterScreen(docterId: docterId),
+          );
         },
       ),
 
@@ -188,8 +122,15 @@ GoRouter createRouter(String role) {
         name: "Add Docter",
         builder: (context, state) {
           final String hospitalId = state.pathParameters["hospital_id"]!;
+          final session = context.read<SessionManager>();
 
-          return AddDocterScreen(hospitalId: hospitalId);
+          return ChangeNotifierProvider(
+            create: (_) => DocterProvider(
+              session: session.session,
+              hospitalId: hospitalId,
+            ),
+            child: AddDocterScreen(hospitalId: hospitalId),
+          );
         },
       ),
 
@@ -200,6 +141,21 @@ GoRouter createRouter(String role) {
           final String hospitalId = state.pathParameters["hospital_id"]!;
 
           return EditHospitalScreen(hospitalId: hospitalId);
+        },
+      ),
+
+      GoRoute(
+        path: "/edit-docter/:docter_id",
+        name: "Edit docter",
+        builder: (context, state) {
+          final String docterId = state.pathParameters["docter_id"]!;
+          final session = context.read<SessionManager>();
+
+          return ChangeNotifierProvider(
+            create: (_) =>
+                DocterProvider(session: session.session, docterId: docterId),
+            child: EditDocterScreen(docterId: docterId),
+          );
         },
       ),
     ],

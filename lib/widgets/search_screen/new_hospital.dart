@@ -2,20 +2,6 @@ import 'package:easyhealth/models/hospital_model.dart';
 import 'package:easyhealth/widgets/hospital_card.dart';
 import 'package:flutter/material.dart';
 
-class Hospital {
-  final String imageUrl;
-  final String name;
-  final String address;
-  final String hospitalId;
-
-  Hospital({
-    required this.imageUrl,
-    required this.hospitalId,
-    required this.name,
-    required this.address,
-  });
-}
-
 class ListViewNewHospital extends StatefulWidget {
   final String? keyword;
   final List<HospitalModel> hospitals;

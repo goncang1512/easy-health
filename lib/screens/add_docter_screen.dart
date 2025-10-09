@@ -1,3 +1,4 @@
+import 'package:easyhealth/widgets/add_docter/form_add_docter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +23,9 @@ class AddDocterScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         // biar icon/teks jadi hitam
       ),
-      body: Center(child: Text("Center $hospitalId")),
+      body: SingleChildScrollView(
+        child: Column(children: [FormAddDocter(method: "CREATE")]),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:easyhealth/widgets/search_screen/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +11,10 @@ class AppBarSearch extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: context.canPop()
           ? IconButton(
-              onPressed: () => context.pop(),
+              onPressed: () {
+                searchController.value = "clear";
+                context.go("/search");
+              },
               icon: const Icon(Icons.arrow_back),
             )
           : null,

@@ -7,6 +7,7 @@ class DoctorCard extends StatelessWidget {
   final String hospital;
   final VoidCallback? onBookTap;
   final bool showHospital;
+  final String? buttonText;
 
   const DoctorCard({
     super.key,
@@ -16,6 +17,7 @@ class DoctorCard extends StatelessWidget {
     required this.specialty,
     required this.hospital,
     this.onBookTap,
+    this.buttonText,
   });
 
   @override
@@ -115,7 +117,12 @@ class DoctorCard extends StatelessWidget {
                   horizontal: 16,
                 ),
               ),
-              child: const Text("Book", style: TextStyle(color: Colors.white)),
+              child: Text(
+                (buttonText == null || buttonText!.isEmpty)
+                    ? "Book"
+                    : buttonText!,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

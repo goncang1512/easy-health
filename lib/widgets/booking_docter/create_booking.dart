@@ -1,19 +1,20 @@
 import 'package:easyhealth/provider/booking_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CreateBooking extends StatelessWidget {
-  const CreateBooking({super.key});
+  final String docterId;
+  final String hospitalId;
+  const CreateBooking({
+    super.key,
+    required this.docterId,
+    required this.hospitalId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final booking = Provider.of<BookingProvider>(context);
-
-    void onSubmit() {
-      print(
-        "Nama : ${booking.nameController.text} \n Phone: ${booking.numberController.text}\nDate: ${booking.dateController.text}\nTime: ${booking.timeController.text}\nDescription: ${booking.descController.text}",
-      );
-    }
+    final booking = context.watch<BookingProvider>();
 
     return Container(
       decoration: BoxDecoration(
@@ -25,8 +26,28 @@ class CreateBooking extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: onSubmit,
-              icon: const Icon(Icons.calendar_today, color: Colors.white),
+              onPressed: booking.isLoading
+                  ? null
+                  : () async {
+                      bool status = await booking.onSubmit(
+                        hospitalId,
+                        docterId,
+                      );
+
+                      if (status) {
+                        context.go("/booking");
+                      }
+                    },
+              icon: booking.isLoading
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Icon(Icons.calendar_today, color: Colors.white),
               label: const Text(
                 "Booking Sekarang",
                 style: TextStyle(

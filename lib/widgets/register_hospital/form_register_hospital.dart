@@ -72,7 +72,13 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
 
           const SizedBox(height: 10),
 
-          ImageUploadPreview(),
+          ImageUploadPreview(
+            placeholder: "Klik untuk upload",
+            setImage: (value) {
+              regis.setImage(value);
+            },
+            imageUrl: regis.imageUrl,
+          ),
 
           const SizedBox(height: 10),
 
