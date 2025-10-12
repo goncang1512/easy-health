@@ -1,34 +1,48 @@
+import 'package:easyhealth/models/stats_model.dart';
 import 'package:flutter/material.dart';
 
-class DashboardStats extends StatelessWidget {
-  final List<Map<String, dynamic>> items = [
-    {
-      'icon': Icons.calendar_today,
-      'title': 'Booking Hari Ini',
-      'value': '124',
-      'color': Colors.green,
-    },
-    {
-      'icon': Icons.medical_information_outlined,
-      'title': 'Dokter Aktif',
-      'value': '8',
-      'color': Colors.blue,
-    },
-    {
-      'icon': Icons.check_circle_outline,
-      'title': 'Selesai',
-      'value': '360',
-      'color': Colors.green,
-    },
-    {
-      'icon': Icons.cancel_outlined,
-      'title': 'Dibatalkan',
-      'value': '12',
-      'color': Colors.red,
-    },
-  ];
+class DashbaordStats extends StatefulWidget {
+  final StatsDashboardModel? stats;
+  const DashbaordStats({super.key, this.stats});
 
-  DashboardStats({super.key});
+  @override
+  State<DashbaordStats> createState() => _DashboardStats();
+}
+
+class _DashboardStats extends State<DashbaordStats> {
+  List<Map<String, dynamic>> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    items = [
+      {
+        'icon': Icons.calendar_today,
+        'title': 'Booking Hari Ini',
+        'value': widget.stats?.bookingHariIni.toString(),
+        'color': Colors.green,
+      },
+      {
+        'icon': Icons.medical_information_outlined,
+        'title': 'Dokter Aktif',
+        'value': widget.stats?.dokterAktif.toString(),
+        'color': Colors.blue,
+      },
+      {
+        'icon': Icons.check_circle_outline,
+        'title': 'Selesai',
+        'value': widget.stats?.selesai.toString(),
+        'color': Colors.green,
+      },
+      {
+        'icon': Icons.cancel_outlined,
+        'title': 'Dibatalkan',
+        'value': widget.stats?.dibatalkan.toString(),
+        'color': Colors.red,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

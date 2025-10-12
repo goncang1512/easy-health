@@ -30,7 +30,7 @@ class HospitalProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future registerHospital() async {
+  Future<Map<String, Object>> registerHospital() async {
     _isLoading = true;
     notifyListeners();
 
@@ -61,7 +61,7 @@ class HospitalProvider with ChangeNotifier {
         }
       }
 
-      await HTTP.post(
+      final result = await HTTP.post(
         "/api/hospital",
         body: {
           "name": nameHospital.text,
@@ -76,16 +76,16 @@ class HospitalProvider with ChangeNotifier {
         },
       );
 
-      return true;
+      return {"status": result["status"], "message": result["message"]};
     } catch (error) {
-      return false;
+      return {"status": false, "message": "Gagal mengirim booking: $error"};
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future updateHospital(String hospitalId) async {
+  Future<Map<String, Object>> updateHospital(String hospitalId) async {
     _isLoading = true;
     notifyListeners();
 
@@ -116,7 +116,7 @@ class HospitalProvider with ChangeNotifier {
         }
       }
 
-      await HTTP.put(
+      final result = await HTTP.put(
         "/api/hospital/edit/$hospitalId",
         body: {
           "name": nameHospital.text,
@@ -131,9 +131,9 @@ class HospitalProvider with ChangeNotifier {
         },
       );
 
-      return true;
+      return {"status": result["status"], "message": result["message"]};
     } catch (error) {
-      return false;
+      return {"status": false, "message": "Gagal mengirim booking: $error"};
     } finally {
       _isLoading = false;
       notifyListeners();

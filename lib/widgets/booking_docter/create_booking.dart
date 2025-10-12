@@ -1,4 +1,5 @@
 import 'package:easyhealth/provider/booking_provider.dart';
+import 'package:easyhealth/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -29,14 +30,14 @@ class CreateBooking extends StatelessWidget {
               onPressed: booking.isLoading
                   ? null
                   : () async {
-                      bool status = await booking.onSubmit(
-                        hospitalId,
-                        docterId,
-                      );
+                      final data = await booking.onSubmit(hospitalId, docterId);
 
-                      if (status) {
-                        context.go("/booking");
+                      if (data['status'] == false) {
+                        Alert.showBanner("$data['message']", context);
+                        return;
                       }
+
+                      context.go("/booking");
                     },
               icon: booking.isLoading
                   ? SizedBox(

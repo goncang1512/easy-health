@@ -43,7 +43,7 @@ class DocterProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> regisDokter() async {
+  Future<Map<String, Object>> regisDokter() async {
     _isLoading = true;
     notifyListeners();
 
@@ -75,7 +75,7 @@ class DocterProvider with ChangeNotifier {
         }
       }
 
-      await HTTP.post(
+      final result = await HTTP.post(
         "/api/docter",
         body: {
           "name": name.text,
@@ -87,9 +87,9 @@ class DocterProvider with ChangeNotifier {
         },
       );
 
-      return true;
+      return {"status": result["status"], "message": result["message"]};
     } catch (error) {
-      return false;
+      return {"status": false, "message": "Gagal mengirim booking: $error"};
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -141,7 +141,7 @@ class DocterProvider with ChangeNotifier {
     }
   }
 
-  Future updateDocter() async {
+  Future<Map<String, Object>> updateDocter() async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -172,7 +172,7 @@ class DocterProvider with ChangeNotifier {
         }
       }
 
-      await HTTP.put(
+      final result = await HTTP.put(
         "/api/docter/edit-docter/$docterId",
         body: {
           "name": name.text,
@@ -184,9 +184,9 @@ class DocterProvider with ChangeNotifier {
         },
       );
 
-      return true;
+      return {"status": result["status"], "message": result["message"]};
     } catch (error) {
-      return false;
+      return {"status": false, "message": "Gagal mengirim booking: $error"};
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,8 +1,10 @@
 import 'package:easyhealth/provider/hospital_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/utils/alert.dart';
 import 'package:easyhealth/widgets/input_field.dart';
 import 'package:easyhealth/widgets/register_hospital/upload_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class FormRegisterHospital extends StatefulWidget {
@@ -88,20 +90,22 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
               onPressed: regis.isLoading
                   ? null
                   : () async {
+                      Map<String, Object> res;
                       if (widget.method == "CREATE") {
-                        bool res = await regis.registerHospital();
-                        if (res) {
-                          await context.read<SessionManager>().loadSession();
-                        }
+                        res = await regis.registerHospital();
                       } else {
-                        bool res = await regis.updateHospital(
+                        res = await regis.updateHospital(
                           widget.hospitalId.toString(),
                         );
-
-                        if (res) {
-                          await context.read<SessionManager>().loadSession();
-                        }
                       }
+
+                      if (res['status'] == false) {
+                        Alert.showBanner("$res['message']", context);
+                        return;
+                      }
+
+                      await context.read<SessionManager>().refreshSession();
+                      context.go("/home");
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,

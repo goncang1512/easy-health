@@ -28,7 +28,7 @@ class AppRoutes {
 }
 
 GoRouter createRouter(String role) {
-  return GoRouter(
+  final GoRouter router = GoRouter(
     initialLocation: "/splash",
     routes: [
       StatefulShellRoute.indexedStack(
@@ -160,4 +160,6 @@ GoRouter createRouter(String role) {
       ),
     ],
   );
+
+  return router;
 }

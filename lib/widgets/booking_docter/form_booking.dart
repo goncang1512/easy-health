@@ -66,7 +66,7 @@ class _FormBookingComponent extends State<FormBooking> {
           CustomInputField(
             label: "Catatan Tambahan",
             hint: "Jelaskan keluhan atau tambahan khusus...",
-            controller: booking.descController,
+            controller: booking.noteController,
             maxLines: 5, // jadi text area
           ),
         ],

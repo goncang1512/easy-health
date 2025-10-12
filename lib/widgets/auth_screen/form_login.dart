@@ -1,8 +1,6 @@
-// import 'package:easyhealth/widgets/auth_screen/auth_provider.dart';
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:easyhealth/provider/auth_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/utils/alert.dart';
 import 'package:easyhealth/utils/secure_storage.dart';
 import 'package:easyhealth/widgets/auth_screen/textfield.dart';
 import 'package:flutter/material.dart';
@@ -34,29 +32,15 @@ class _FormLogin extends State<FormLogin> {
       );
 
       if (!context.mounted) return;
-      final messenger = ScaffoldMessenger.of(context);
 
       if (response?["status"]) {
         await PrefsService.saveToken(response?["result"]["token"]);
         await context.read<SessionManager>().loadSession();
-        messenger.hideCurrentMaterialBanner();
-        context.go("/");
+        context.go("/home");
       }
 
       if (response?["status"] == false) {
-        messenger.showMaterialBanner(
-          MaterialBanner(
-            backgroundColor: Colors.red.shade100,
-            content: Text("Registering ${response?["message"]}"),
-            actions: [
-              TextButton(
-                onPressed: () =>
-                    ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
-                child: const Text('Tutup'),
-              ),
-            ],
-          ),
-        );
+        Alert.showBanner("Registering ${response?["message"]}", context);
       }
     }
 

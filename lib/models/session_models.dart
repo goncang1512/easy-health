@@ -108,4 +108,16 @@ class UserSession {
   Map<String, dynamic> toMap() {
     return {'user': user.toMap(), 'sessionData': session.toMap()};
   }
+
+  UserSession copyWith({
+    User? user,
+    HospitalData? hospital,
+    SessionData? session,
+  }) {
+    return UserSession(
+      user: user ?? this.user,
+      session: session ?? this.session, // session/token tetap sama
+      hospital: hospital ?? this.hospital,
+    );
+  }
 }

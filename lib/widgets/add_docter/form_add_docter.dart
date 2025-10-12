@@ -1,4 +1,5 @@
 import 'package:easyhealth/provider/docter_provider.dart';
+import 'package:easyhealth/utils/alert.dart';
 import 'package:easyhealth/widgets/add_docter/docter_schedule.dart';
 import 'package:easyhealth/widgets/input_field.dart';
 import 'package:easyhealth/widgets/register_hospital/upload_image.dart';
@@ -63,16 +64,20 @@ class _FormAddDocter extends State<FormAddDocter> {
               onPressed: provider.isLoading
                   ? null
                   : () async {
-                      bool status = false;
+                      Map<String, Object> res;
 
                       if (widget.method == "CREATE") {
-                        status = await provider.regisDokter();
+                        res = await provider.regisDokter();
                       } else {
-                        status = await provider.updateDocter();
+                        res = await provider.updateDocter();
                       }
-                      if (status) {
-                        context.go("/booking");
+
+                      if (res['status'] == false) {
+                        Alert.showBanner("${res["message"]}", context);
+                        return;
                       }
+
+                      context.go("/booking");
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF10B981),

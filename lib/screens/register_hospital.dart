@@ -10,7 +10,7 @@ class RegisterHospital extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = context.read<SessionManager>();
+    final data = context.watch<SessionManager>();
 
     return ChangeNotifierProvider(
       create: (_) => HospitalProvider(session: data.session),

@@ -1,3 +1,5 @@
+import 'package:easyhealth/models/stats_model.dart';
+import 'package:easyhealth/provider/admin_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/widgets/dashboard/dashbaord_stats.dart';
 import 'package:easyhealth/widgets/dashboard/list_consultation.dart';
@@ -13,9 +15,24 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreen extends State<DashboardScreen> {
+  late Future<StatsDashboardModel?> _futureDashboard;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureDashboard = context.read<AdminProvider>().getStatsDashboard();
+  }
+
+  Future<void> _refreshData() async {
+    // panggil ulang future dan setState agar FutureBuilder ter-*rebuild*
+    setState(() {
+      _futureDashboard = context.read<AdminProvider>().getStatsDashboard();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final data = context.read<SessionManager>();
+    final data = context.watch<SessionManager>();
 
     return Scaffold(
       appBar: AppBar(
@@ -63,56 +80,87 @@ class _DashboardScreen extends State<DashboardScreen> {
               ),
             )
           : null,
-      body: data.session?.user.role == "Admin" && data.session?.hospital == null
-          ? Center(
-              child: ElevatedButton(
-                onPressed: () => context.push("/register/hospital"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.all(12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // rounded corners
-                    side: BorderSide(
-                      color: Colors.greenAccent,
-                      width: 2,
-                    ), // border
-                  ),
-                  elevation: 5,
-                ),
-                child: Text(
-                  "Daftar Rumah Sakit",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      "Ringkasan Hari Ini",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: FutureBuilder<StatsDashboardModel?>(
+          future: _futureDashboard,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: const [NothingHospital()],
+              );
+            }
+
+            final StatsDashboardModel? stats = snapshot.data;
+
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child:
+                  data.session?.user.role == "Admin" &&
+                      data.session?.hospital == null
+                  ? NothingHospital()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            "Ringkasan Hari Ini",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        DashbaordStats(stats: stats),
+
+                        const SizedBox(height: 10),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: ListConsultation(
+                            booking: stats?.bookRange ?? [],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  DashboardStats(),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
-                  const SizedBox(height: 10),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: ListConsultation(),
-                  ),
-                ],
-              ),
-            ),
+class NothingHospital extends StatelessWidget {
+  const NothingHospital({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () => context.push("/register/hospital"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          padding: EdgeInsets.all(12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // rounded corners
+            side: BorderSide(color: Colors.greenAccent, width: 2), // border
+          ),
+          elevation: 5,
+        ),
+        child: Text(
+          "Daftar Rumah Sakit",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 }

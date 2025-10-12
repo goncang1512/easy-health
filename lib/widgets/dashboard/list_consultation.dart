@@ -1,7 +1,9 @@
+import 'package:easyhealth/models/stats_model.dart';
 import 'package:flutter/material.dart';
 
 class ListConsultation extends StatelessWidget {
-  const ListConsultation({super.key});
+  final List<BookRange> booking;
+  const ListConsultation({super.key, required this.booking});
 
   @override
   Widget build(BuildContext context) {
@@ -14,26 +16,35 @@ class ListConsultation extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 10),
-        CardConsultaion(),
-        const SizedBox(height: 10),
-        CardConsultaion(),
-        const SizedBox(height: 10),
-        CardConsultaion(),
-        const SizedBox(height: 10),
-        CardConsultaion(),
-        const SizedBox(height: 10),
+
+        ListView.builder(
+          shrinkWrap: true, // penting: biar tinggi mengikuti isi
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: booking.length,
+          itemBuilder: (context, index) {
+            final konsul = booking[index];
+
+            return Column(
+              children: [
+                CardConsultaion(book: konsul),
+                const SizedBox(height: 10),
+              ],
+            );
+          },
+        ),
       ],
     );
   }
 }
 
 class CardConsultaion extends StatelessWidget {
-  const CardConsultaion({super.key});
+  final BookRange book;
+  const CardConsultaion({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white, // 👉 ini background color-nya
         borderRadius: BorderRadius.circular(12),
@@ -55,11 +66,11 @@ class CardConsultaion extends StatelessWidget {
           Column(
             children: [
               Text(
-                "Nama",
+                book.name,
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
               ),
               Text(
-                "Dokter",
+                book.docter.name,
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             ],
@@ -68,13 +79,13 @@ class CardConsultaion extends StatelessWidget {
           Column(
             children: [
               Text(
-                "10:10",
+                book.bookTime,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
 
               Chip(
-                label: const Text(
-                  "Konfirmasi",
+                label: Text(
+                  book.status,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

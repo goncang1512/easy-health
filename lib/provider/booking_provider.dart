@@ -13,7 +13,7 @@ class BookingProvider with ChangeNotifier {
   final numberController = TextEditingController();
   final dateController = TextEditingController();
   final timeController = TextEditingController();
-  final descController = TextEditingController();
+  final noteController = TextEditingController();
 
   Future<DocterModel?> getDetailDocter() async {
     try {
@@ -24,25 +24,29 @@ class BookingProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> onSubmit(String hospitalId, String docterId) async {
+  Future<Map<String, Object>> onSubmit(
+    String hospitalId,
+    String docterId,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await HTTP.post(
+      final result = await HTTP.post(
         "/api/booking",
         body: {
           "name": nameController.text,
           "bookDate": dateController.text,
           "bookTime": timeController.text,
           "noPhone": numberController.text,
+          "note": noteController.text,
           "docterId": docterId,
           "hospitalId": hospitalId,
         },
       );
 
-      return true;
+      return {"status": result["status"], "message": result["message"]};
     } catch (error) {
-      return false;
+      return {"status": false, "message": "Gagal mengirim booking: $error"};
     } finally {
       _isLoading = false;
       notifyListeners();

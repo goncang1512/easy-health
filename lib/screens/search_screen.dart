@@ -76,7 +76,13 @@ class _SearchPage extends State<SearchScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("Tidak ada data"));
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: const [
+                  SizedBox(height: 250),
+                  Center(child: Text('Tidak ada data')),
+                ],
+              );
             }
 
             final hospitals =

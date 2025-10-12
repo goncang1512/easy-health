@@ -51,7 +51,13 @@ class _ListDocterScreen extends State<ListDocterScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No doctors found'));
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: const [
+                  SizedBox(height: 250),
+                  Center(child: Text('Tidak ada docter terdaftar')),
+                ],
+              );
             }
 
             final docters = snapshot.data;

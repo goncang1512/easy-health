@@ -6,9 +6,10 @@ import 'package:easyhealth/utils/get_session.dart';
 
 class SessionManager extends ChangeNotifier {
   UserSession? _session;
+  UserSession? _tempSession;
   bool _isLoading = false;
 
-  UserSession? get session => _session;
+  UserSession? get session => _tempSession ?? _session;
   bool get isLoading => _isLoading;
 
   Future<void> loadSession() async {
@@ -29,5 +30,23 @@ class SessionManager extends ChangeNotifier {
     await PrefsService.deleteToken();
     _session = null;
     notifyListeners();
+  }
+
+  Future<void> refreshSession() async {
+    if (_session == null) return;
+
+    try {
+      final updated = await UseSession.refreshSession();
+      if (updated != null) {
+        // update _session dengan user/hospital terbaru
+        _session = _session!.copyWith(
+          user: updated.user,
+          session: updated.session,
+          hospital: updated.hospital,
+        );
+        _tempSession = null; // bersihkan temp session
+        notifyListeners();
+      }
+    } catch (_) {}
   }
 }

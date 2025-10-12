@@ -40,4 +40,8 @@ class UseSession {
     await context.read<SessionManager>().clearSession();
     context.go("/login");
   }
+
+  static Future<UserSession?> refreshSession() async {
+    return getSession(); // bisa di-extend kalau ada endpoint khusus update data
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:easyhealth/provider/admin_provider.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/booking_screen.dart';
@@ -22,7 +23,11 @@ List<StatefulShellBranch> buildBranches(String role) {
           path: "/home",
           builder: (context, state) {
             if (role == "Admin") {
-              return DashboardScreen();
+              final session = context.read<SessionManager>();
+              return ChangeNotifierProvider(
+                create: (_) => AdminProvider(session: session.session),
+                child: DashboardScreen(),
+              );
             } else {
               return HomeScreen();
             }

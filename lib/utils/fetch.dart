@@ -9,6 +9,7 @@ class HTTP {
   static const Map<String, String> defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'x-api-key': "aLfm7LDBdZPZ820IO69JvXd3sRiE03AE",
   };
 
   static Uri _buildUri(
