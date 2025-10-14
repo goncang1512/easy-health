@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 class TagHospital extends StatelessWidget {
   final int badroom;
-  const TagHospital({super.key, required this.badroom});
+  final int docterCount;
+  const TagHospital({
+    super.key,
+    required this.badroom,
+    required this.docterCount,
+  });
 
   Widget buildItem(IconData icon, String text) {
     return Column(
@@ -37,7 +42,7 @@ class TagHospital extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          buildItem(Icons.medical_services, "25+ Dokter"),
+          buildItem(Icons.medical_services, "$docterCount Dokter"),
           buildItem(Icons.bed, "$badroom Bed"),
           buildItem(Icons.local_hospital, "IGD 24/7"),
         ],

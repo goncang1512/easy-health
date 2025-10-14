@@ -2,9 +2,11 @@ import 'package:easyhealth/config/branch_app.dart';
 import 'package:easyhealth/provider/auth_provider.dart';
 import 'package:easyhealth/provider/booking_provider.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
+import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/navigation_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/add_docter_screen.dart';
+import 'package:easyhealth/screens/chat_screen.dart';
 import 'package:easyhealth/screens/docter_screen.dart';
 import 'package:easyhealth/screens/edit_docter_screen.dart';
 import 'package:easyhealth/screens/edit_hospital_screen.dart';
@@ -93,8 +95,16 @@ GoRouter createRouter(String role) {
         name: "Hospital",
         builder: (context, state) {
           final String hospitalId = state.pathParameters["hospital_id"]!;
+          final session = context.read<SessionManager>();
 
-          return HospitalScreen(hospitalId: hospitalId);
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (_) => MessageProvider(session: session.session),
+              ),
+            ],
+            child: HospitalScreen(hospitalId: hospitalId),
+          );
         },
       ),
 
@@ -155,6 +165,20 @@ GoRouter createRouter(String role) {
             create: (_) =>
                 DocterProvider(session: session.session, docterId: docterId),
             child: EditDocterScreen(docterId: docterId),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: "/chat-room/:room_id",
+        name: "Chat Room",
+        builder: (context, state) {
+          final String roomId = state.pathParameters["room_id"]!;
+          final session = context.read<SessionManager>();
+
+          return ChangeNotifierProvider(
+            create: (_) => MessageProvider(session: session.session),
+            child: ChatScreen(roomId: roomId),
           );
         },
       ),

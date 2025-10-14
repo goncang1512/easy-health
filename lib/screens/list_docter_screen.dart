@@ -32,10 +32,7 @@ class _ListDocterScreen extends State<ListDocterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Daftar Dokter",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: Text("Daftar Dokter"),
         centerTitle: false,
         backgroundColor: Color(0xFF10B981),
         foregroundColor: Colors.white,

@@ -14,10 +14,7 @@ class AddDocterScreen extends StatelessWidget {
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: Text(
-          "Tambahkan Dokter",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: Text("Tambahkan Dokter"),
         centerTitle: true,
         backgroundColor: Color(0xFF10B981),
         foregroundColor: Colors.white,

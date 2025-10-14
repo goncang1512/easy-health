@@ -36,10 +36,7 @@ class _DashboardScreen extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Dashboard ${data.session?.hospital?.name ?? "Admin"}",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: Text("Dashboard ${data.session?.hospital?.name ?? "Admin"}"),
         centerTitle: false,
         backgroundColor: Color(0xFFFFFFFF),
         elevation: 4,

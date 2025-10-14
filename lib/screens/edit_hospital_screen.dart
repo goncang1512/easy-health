@@ -28,10 +28,7 @@ class _EditHospitalScreen extends State<EditHospitalScreen> {
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
           ),
-          title: Text(
-            "Edit Rumah Sakit",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
+          title: Text("Edit Rumah Sakit"),
           centerTitle: true,
           backgroundColor: Color(0xFF10B981),
           foregroundColor: Colors.white,
