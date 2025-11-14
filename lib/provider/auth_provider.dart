@@ -1,3 +1,4 @@
+import 'package:easyhealth/utils/get_session.dart';
 import 'package:flutter/material.dart';
 import 'package:easyhealth/utils/fetch.dart';
 
@@ -37,6 +38,8 @@ class AuthProvider extends ChangeNotifier {
       "/api/sign/login",
       body: {"email": email.trim(), "password": password.trim()},
     );
+
+    await statusUser(data['result']['user']['id'], "online");
 
     _loading = false;
 

@@ -6,11 +6,15 @@ class ImageUploadPreview extends StatefulWidget {
   final void Function(File) setImage;
   final String? imageUrl;
   final String placeholder;
+  final double? height;
+  final double? width;
   const ImageUploadPreview({
     super.key,
     required this.setImage,
     this.imageUrl,
     required this.placeholder,
+    this.height,
+    this.width,
   });
 
   @override
@@ -37,8 +41,8 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
-        height: 200,
-        width: double.infinity,
+        height: widget.height ?? 200,
+        width: widget.width ?? double.infinity,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 0.8),
           color: const Color.fromARGB(

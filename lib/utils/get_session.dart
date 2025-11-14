@@ -37,11 +37,19 @@ class UseSession {
   }
 
   static void logOut(BuildContext context) async {
-    await context.read<SessionManager>().clearSession();
+    final provider = context.read<SessionManager>();
+
+    await statusUser(provider.session?.user.id ?? '', "offline");
+
+    await provider.clearSession();
     context.go("/login");
   }
 
   static Future<UserSession?> refreshSession() async {
     return getSession(); // bisa di-extend kalau ada endpoint khusus update data
   }
+}
+
+Future<void> statusUser(String userId, String event) async {
+  await HTTP.post("/api/socket/auth", body: {"userId": userId, "event": event});
 }

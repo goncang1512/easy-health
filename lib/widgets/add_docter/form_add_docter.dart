@@ -45,6 +45,7 @@ class _FormAddDocter extends State<FormAddDocter> {
               ),
               const SizedBox(height: 5),
               ImageUploadPreview(
+                height: 400,
                 setImage: (value) {
                   provider.setImage(value);
                 },
