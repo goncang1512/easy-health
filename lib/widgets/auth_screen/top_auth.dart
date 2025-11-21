@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easyhealth/utils/theme.dart';
 
 class TopAuth extends StatelessWidget {
   const TopAuth({super.key});
@@ -11,7 +12,7 @@ class TopAuth extends StatelessWidget {
         Container(
           height: 180,
           decoration: const BoxDecoration(
-            color: Colors.green,
+            color: ThemeColors.primary,
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(40),
               bottomRight: Radius.circular(40),

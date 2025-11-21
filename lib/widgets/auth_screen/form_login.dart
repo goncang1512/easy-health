@@ -6,6 +6,7 @@ import 'package:easyhealth/widgets/auth_screen/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:easyhealth/utils/theme.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({super.key});
@@ -91,7 +92,7 @@ class _FormLogin extends State<FormLogin> {
               child: ElevatedButton(
                 onPressed: provider.isLoading ? null : onLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: ThemeColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     vertical: 14,
@@ -126,7 +127,7 @@ class _FormLogin extends State<FormLogin> {
                   },
                   child: Text(
                     "Daftar",
-                    style: TextStyle(color: Colors.green, fontSize: 16),
+                    style: TextStyle(color: ThemeColors.primary, fontSize: 16),
                   ),
                 ),
               ],

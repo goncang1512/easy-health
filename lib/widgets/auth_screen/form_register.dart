@@ -5,6 +5,7 @@ import 'package:easyhealth/widgets/auth_screen/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:easyhealth/utils/theme.dart';
 
 class FormRegister extends StatefulWidget {
   const FormRegister({super.key});
@@ -121,7 +122,7 @@ class _FormRegister extends State<FormRegister> {
               child: ElevatedButton(
                 onPressed: provider.isLoading ? null : onLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: ThemeColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     vertical: 14,
@@ -156,7 +157,7 @@ class _FormRegister extends State<FormRegister> {
                   },
                   child: Text(
                     "Masuk",
-                    style: TextStyle(color: Colors.green, fontSize: 16),
+                    style: TextStyle(color: ThemeColors.primary, fontSize: 16),
                   ),
                 ),
               ],
