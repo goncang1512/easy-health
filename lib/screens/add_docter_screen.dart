@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddDocterScreen extends StatelessWidget {
-  final String hospitalId;
-  const AddDocterScreen({super.key, required this.hospitalId});
+  const AddDocterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

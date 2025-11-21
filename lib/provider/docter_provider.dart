@@ -9,13 +9,13 @@ import 'package:http/http.dart' as http;
 
 class DocterProvider with ChangeNotifier {
   UserSession? session;
-  String? hospitalId;
   String? docterId;
 
-  DocterProvider({this.session, this.hospitalId, this.docterId});
+  DocterProvider({this.session, this.docterId});
 
   final TextEditingController name = TextEditingController();
   final TextEditingController spesialis = TextEditingController();
+  final TextEditingController hospitalName = TextEditingController();
   Map<String, dynamic> schedule = {};
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -58,7 +58,8 @@ class DocterProvider with ChangeNotifier {
 
         final request = http.MultipartRequest("POST", url)
           ..fields['upload_preset'] = "eccomerce_app"
-          ..fields['folder'] = "docter"
+          ..fields['public_id'] =
+              "foto-docter/${DateTime.now().millisecondsSinceEpoch}"
           ..files.add(await http.MultipartFile.fromPath("file", image!.path));
 
         final response = await request.send();
@@ -79,9 +80,10 @@ class DocterProvider with ChangeNotifier {
         "/api/docter",
         body: {
           "name": name.text,
+          "user_id": session?.user.id,
           "specialits": spesialis.text,
           "schedule": jsonEncode(schedule),
-          "hospital_id": hospitalId,
+          "hospital_name": hospitalName.text,
           "secure_url": secureUrl,
           "public_id": publicId,
         },
@@ -114,6 +116,8 @@ class DocterProvider with ChangeNotifier {
     try {
       final result = await HTTP.get("/api/docter/edit-detail/$docterId");
       final data = result["result"];
+
+      print("HASIL === ${result['result']}");
 
       name.text = data['name'] ?? '';
       spesialis.text = data['specialits'] ?? '';

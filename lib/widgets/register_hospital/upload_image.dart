@@ -74,6 +74,8 @@ class _ImageUploadPreviewState extends State<ImageUploadPreview> {
 
     // 2️⃣ Jika ada gambar dari Cloudinary / server
     if (imageUrl != null && imageUrl.isNotEmpty) {
+      print("IMAGE URL == $imageUrl");
+
       return Image.network(
         imageUrl,
         fit: BoxFit.cover,

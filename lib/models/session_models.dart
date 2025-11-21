@@ -86,22 +86,50 @@ class HospitalData {
   }
 }
 
+class DocterSession {
+  final String id;
+  final String specialits;
+  final String photoUrl;
+
+  const DocterSession({
+    required this.id,
+    required this.specialits,
+    required this.photoUrl,
+  });
+
+  factory DocterSession.fromMap(Map<String, dynamic> map) {
+    return DocterSession(
+      id: map['id'],
+      specialits: map['specialits'],
+      photoUrl: map['photoUrl'],
+    );
+  }
+}
+
 class UserSession {
   final User user;
   final SessionData session;
   final HospitalData? hospital;
+  final DocterSession? docter;
 
-  UserSession({required this.user, required this.session, this.hospital});
+  UserSession({
+    required this.user,
+    required this.session,
+    this.hospital,
+    this.docter,
+  });
 
   factory UserSession.fromMap(
     Map<String, dynamic> user,
     Map<String, dynamic> session,
     Map<String, dynamic>? hospital,
+    Map<String, dynamic>? docter,
   ) {
     return UserSession(
       user: User.fromMap(user),
       session: SessionData.fromMap(session),
       hospital: hospital != null ? HospitalData.fromMap(hospital) : null,
+      docter: docter != null ? DocterSession.fromMap(docter) : null,
     );
   }
 
@@ -113,11 +141,13 @@ class UserSession {
     User? user,
     HospitalData? hospital,
     SessionData? session,
+    DocterSession? docter,
   }) {
     return UserSession(
       user: user ?? this.user,
       session: session ?? this.session, // session/token tetap sama
       hospital: hospital ?? this.hospital,
+      docter: docter ?? this.docter,
     );
   }
 }

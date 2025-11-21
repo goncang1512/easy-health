@@ -30,19 +30,44 @@ class _HomePage extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final data = context.watch<SessionManager>();
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                await context.read<SessionManager>().clearSession();
-                // ignore: use_build_context_synchronously
-                context.go("/login");
-              },
-              child: Text("LOG OUT dari $name"),
-            ),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  await context.read<SessionManager>().clearSession();
+                  // ignore: use_build_context_synchronously
+                  context.go("/login");
+                },
+                child: Column(
+                  children: [
+                    Text("LOG OUT dari ${data.session?.user.name}"),
+                    Text("ROLE ${data.session?.user.role}"),
+                  ],
+                ),
+              ),
+              data.session?.docter?.id == null
+                  ? ElevatedButton(
+                      onPressed: () {
+                        // ignore: use_build_context_synchronously
+                        context.push("/add-docter");
+                      },
+                      child: Column(children: [Text("Daftar sebagai dokter")]),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        // ignore: use_build_context_synchronously
+                        context.push(
+                          "/edit-docter/${data.session?.docter?.id}",
+                        );
+                      },
+                      child: Column(children: [Text("Edit Dokter")]),
+                    ),
+            ],
+          ),
         ),
       ),
     );

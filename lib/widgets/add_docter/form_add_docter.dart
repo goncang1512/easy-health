@@ -1,4 +1,5 @@
 import 'package:easyhealth/provider/docter_provider.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/alert.dart';
 import 'package:easyhealth/widgets/add_docter/docter_schedule.dart';
 import 'package:easyhealth/widgets/input_field.dart';
@@ -33,6 +34,12 @@ class _FormAddDocter extends State<FormAddDocter> {
             controller: provider.spesialis,
             label: "Spesialis",
             hint: "Contoh: kardiologi, Pediatri",
+          ),
+          const SizedBox(height: 10),
+          CustomInputField(
+            controller: provider.hospitalName,
+            label: "Nama Rumah sakit",
+            hint: "Contoh: RS USU",
           ),
           const SizedBox(height: 10),
 
@@ -78,6 +85,8 @@ class _FormAddDocter extends State<FormAddDocter> {
                         return;
                       }
 
+                      final sessionProv = context.read<SessionManager>();
+                      await sessionProv.loadSession();
                       context.go("/booking");
                     },
               style: ElevatedButton.styleFrom(

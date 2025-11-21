@@ -30,6 +30,7 @@ class UseSession {
         data["result"]["user"],
         data["result"]["session"],
         data['result']['hospital'],
+        data['result']['docter'],
       );
     } catch (error) {
       return null;

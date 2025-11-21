@@ -128,18 +128,14 @@ GoRouter createRouter(String role) {
       ),
 
       GoRoute(
-        path: "/add-docter/:hospital_id",
+        path: "/add-docter",
         name: "Add Docter",
         builder: (context, state) {
-          final String hospitalId = state.pathParameters["hospital_id"]!;
           final session = context.read<SessionManager>();
 
           return ChangeNotifierProvider(
-            create: (_) => DocterProvider(
-              session: session.session,
-              hospitalId: hospitalId,
-            ),
-            child: AddDocterScreen(hospitalId: hospitalId),
+            create: (_) => DocterProvider(session: session.session),
+            child: AddDocterScreen(),
           );
         },
       ),

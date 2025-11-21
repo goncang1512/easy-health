@@ -63,20 +63,20 @@ class _DashboardScreen extends State<DashboardScreen> {
           ),
         ],
       ),
-      floatingActionButton: data.session?.hospital != null
-          ? FloatingActionButton(
-              backgroundColor: Color(0xFF10B981),
-              foregroundColor: Colors.white,
-              onPressed: () {
-                context.push("/add-docter/${data.session?.hospital?.id}");
-              },
-              child: const Icon(
-                Icons.add,
-                fontWeight: FontWeight.bold,
-                size: 30,
-              ),
-            )
-          : null,
+      // floatingActionButton: data.session?.hospital != null
+      //     ? FloatingActionButton(
+      //         backgroundColor: Color(0xFF10B981),
+      //         foregroundColor: Colors.white,
+      //         onPressed: () {
+      //           context.push("/add-docter/${data.session?.hospital?.id}");
+      //         },
+      //         child: const Icon(
+      //           Icons.add,
+      //           fontWeight: FontWeight.bold,
+      //           size: 30,
+      //         ),
+      //       )
+      //     : null,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: FutureBuilder<StatsDashboardModel?>(

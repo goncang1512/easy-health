@@ -43,6 +43,7 @@ class SessionManager extends ChangeNotifier {
           user: updated.user,
           session: updated.session,
           hospital: updated.hospital,
+          docter: updated.docter,
         );
         _tempSession = null; // bersihkan temp session
         notifyListeners();
