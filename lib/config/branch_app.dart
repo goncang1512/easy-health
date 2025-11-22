@@ -4,6 +4,7 @@ import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/booking_screen.dart';
 import 'package:easyhealth/screens/chatlist_screen.dart';
 import 'package:easyhealth/screens/dashboard_screen.dart';
+import 'package:easyhealth/screens/docter_dashboard.dart';
 import 'package:easyhealth/screens/home_screen.dart';
 import 'package:easyhealth/screens/list_docter_screen.dart';
 import 'package:easyhealth/screens/notif_screen.dart';
@@ -28,6 +29,8 @@ List<StatefulShellBranch> buildBranches(String role) {
                 create: (_) => AdminProvider(session: session.session),
                 child: DashboardScreen(),
               );
+            } else if (role == "Docter") {
+              return DocterDashboard();
             } else {
               return HomeScreen();
             }

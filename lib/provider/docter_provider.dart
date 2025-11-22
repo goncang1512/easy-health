@@ -58,8 +58,6 @@ class DocterProvider with ChangeNotifier {
 
         final request = http.MultipartRequest("POST", url)
           ..fields['upload_preset'] = "eccomerce_app"
-          ..fields['public_id'] =
-              "foto-docter/${DateTime.now().millisecondsSinceEpoch}"
           ..files.add(await http.MultipartFile.fromPath("file", image!.path));
 
         final response = await request.send();
@@ -117,9 +115,8 @@ class DocterProvider with ChangeNotifier {
       final result = await HTTP.get("/api/docter/edit-detail/$docterId");
       final data = result["result"];
 
-      print("HASIL === ${result['result']}");
-
       name.text = data['name'] ?? '';
+      hospitalName.text = session?.hospital?.name ?? "";
       spesialis.text = data['specialits'] ?? '';
       imageUrl = data["photoUrl"];
       imageId = data["photoId"];

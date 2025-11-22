@@ -87,7 +87,7 @@ class _FormAddDocter extends State<FormAddDocter> {
 
                       final sessionProv = context.read<SessionManager>();
                       await sessionProv.loadSession();
-                      context.go("/booking");
+                      context.go("/");
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF10B981),
