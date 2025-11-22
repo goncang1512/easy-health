@@ -1,10 +1,37 @@
+import 'package:easyhealth/models/appointment_model.dart';
 import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/utils/theme.dart';
+import 'package:easyhealth/widgets/docter_dashboard/card_pacient.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class DocterDashboard extends StatelessWidget {
+class DocterDashboard extends StatefulWidget {
   const DocterDashboard({super.key});
+
+  @override
+  State<DocterDashboard> createState() => _DocterDashboard();
+}
+
+class _DocterDashboard extends State<DocterDashboard> {
+  Future<List<Appointment>>? futureDashboard;
+
+  @override
+  void initState() {
+    super.initState();
+    final session = context.read<SessionManager>().session;
+    futureDashboard = fetchDoctorDashboard(session!.docter!.id);
+  }
+
+  Future<void> refreshDashboard() async {
+    final session = context.read<SessionManager>().session;
+
+    setState(() {
+      futureDashboard = fetchDoctorDashboard(session!.docter!.id);
+    });
+
+    await futureDashboard; // biar refresh indicator menunggu
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +65,54 @@ class DocterDashboard extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(child: Text("Docter Dashboard")),
+      body: RefreshIndicator(
+        onRefresh: refreshDashboard,
+        color: ThemeColors.primary,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 12, vertical: 10),
+            child: FutureBuilder(
+              future: futureDashboard,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 300,
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
+                final appointments = snapshot.data ?? [];
+
+                if (appointments.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 40),
+                      child: Text("No appointments found."),
+                    ),
+                  );
+                }
+
+                return Column(
+                  children: appointments.map((item) {
+                    return AppointmentCard(
+                      name: item.name,
+                      status: item.status,
+                      time: item.bookTime,
+                      date: item.bookDate,
+                      onCancel: () {},
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

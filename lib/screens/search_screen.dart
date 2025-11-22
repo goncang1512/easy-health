@@ -47,8 +47,6 @@ class _SearchPage extends State<SearchScreen> {
 
     final data = result["result"];
 
-    print("HASIL ==== $data");
-
     final List<HospitalModel> hospitals = (data["results"] as List<dynamic>)
         .map((item) => HospitalModel.fromJson(item as Map<String, dynamic>))
         .toList();
