@@ -16,7 +16,7 @@ class _ChatList extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BarChatLIst(),
+      appBar: const BarChatLIst(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -27,36 +27,48 @@ class _ChatList extends State<ChatListScreen> {
             ),
 
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(
                 children: [
+
+                  /// CHAT 1
                   ChatItem(
                     avatarUrl:
                         "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
                     name: "Goncang",
                     message: "Hello",
                     time: "10:00 PM",
+                    roomId: "room_1", // ✅ WAJIB ADA
                   ),
+
+                  /// CHAT 2
                   ChatItem(
                     avatarUrl:
                         "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Goncang",
-                    message: "Hello",
-                    time: "10:00 PM",
+                    name: "Admin",
+                    message: "Pesan dari admin",
+                    time: "09:30 PM",
+                    roomId: "room_2",
                   ),
+
+                  /// CHAT 3
                   ChatItem(
                     avatarUrl:
                         "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Goncang",
-                    message: "Hello",
-                    time: "10:00 PM",
+                    name: "Dokter",
+                    message: "Halo, ada yang bisa dibantu?",
+                    time: "08:15 PM",
+                    roomId: "room_3",
                   ),
+
+                  /// CHAT 4
                   ChatItem(
                     avatarUrl:
                         "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Goncang",
-                    message: "Hello",
-                    time: "10:00 PM",
+                    name: "Customer Service",
+                    message: "Silakan tunggu ya",
+                    time: "07:45 PM",
+                    roomId: "room_4",
                   ),
                 ],
               ),
@@ -80,16 +92,8 @@ class BarChatLIst extends StatelessWidget implements PreferredSizeWidget {
               icon: const Icon(Icons.arrow_back),
             )
           : null,
-      title: Text("Pesan Admin"),
+      title: const Text("Pesan Admin"),
       centerTitle: false,
-      // actions: [
-      //   IconButton(
-      //     icon: const Icon(Icons.filter_alt, color: Colors.green),
-      //     onPressed: () {
-      //       // aksi filter
-      //     },
-      //   ),
-      // ],
       elevation: 0,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,

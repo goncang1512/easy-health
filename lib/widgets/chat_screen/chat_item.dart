@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatItem extends StatelessWidget {
   final String avatarUrl;
   final String name;
   final String message;
   final String time;
+  final String roomId;
 
   const ChatItem({
     super.key,
@@ -12,56 +14,60 @@ class ChatItem extends StatelessWidget {
     required this.name,
     required this.message,
     required this.time,
+    required this.roomId,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+    return InkWell(
+      onTap: () {
+        // ✅ Navigasi ke GoRoute kamu
+        context.push('/chat-room/$roomId');
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            )
+          ],
         ),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Avatar
-          CircleAvatar(radius: 22, backgroundImage: NetworkImage(avatarUrl)),
-          const SizedBox(width: 12),
-
-          // Nama + Pesan
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Nama + Waktu
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      time,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                // Pesan
-                Text(
-                  message,
-                  style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                ),
-              ],
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(avatarUrl),
+              radius: 25,
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    message,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Text(time, style: const TextStyle(color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }
