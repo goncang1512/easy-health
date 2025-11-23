@@ -2,7 +2,6 @@ import 'package:easyhealth/models/docter_model.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/widgets/dokter_card.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ListDocterScreen extends StatefulWidget {
@@ -26,6 +25,26 @@ class _ListDocterScreen extends State<ListDocterScreen> {
     setState(() {
       _futureDocters = context.read<DocterProvider>().getListDocter();
     });
+  }
+
+  Future<void> updateDocter(String docterId, String status) async {
+    final provider = context.read<DocterProvider>();
+    try {
+      bool res = await provider.updateStatusDocter(docterId, status);
+
+      // Setelah cancel → Refresh UI
+      if (res) {
+        await _refreshData(); // panggil fungsi refresh yg kamu sudah buat
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Dokter berhasil di $status")));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
   }
 
   @override
@@ -69,10 +88,11 @@ class _ListDocterScreen extends State<ListDocterScreen> {
                 itemBuilder: (context, index) {
                   final doctor = docters?[index];
                   return DoctorCard(
-                    onBookTap: () {
-                      context.push("/edit-docter/${doctor?.id}");
-                    },
-                    buttonText: "Edit",
+                    onBookTap: () => updateDocter(
+                      doctor?.id ?? "",
+                      doctor?.status == "verified" ? "unverified" : "verified",
+                    ),
+                    buttonText: doctor?.status ?? "unverified",
                     showHospital: false,
                     imageUrl: doctor?.photoUrl ?? "",
                     name: doctor?.name ?? "",
