@@ -5,6 +5,7 @@ import 'package:easyhealth/screens/booking_screen.dart';
 import 'package:easyhealth/screens/chatlist_screen.dart';
 import 'package:easyhealth/screens/dashboard_screen.dart';
 import 'package:easyhealth/screens/home_screen.dart';
+import 'package:easyhealth/screens/list_booking_screen.dart'; // ← TAMBAH INI
 import 'package:easyhealth/screens/list_docter_screen.dart';
 import 'package:easyhealth/screens/notif_screen.dart';
 import 'package:easyhealth/screens/profile_screen.dart';
@@ -15,7 +16,7 @@ import 'package:provider/provider.dart';
 
 List<StatefulShellBranch> buildBranches(String role) {
   return [
-    // Home, Booking, Searching, dll (tetap)
+    // HOME
     StatefulShellBranch(
       routes: [
         GoRoute(
@@ -35,6 +36,8 @@ List<StatefulShellBranch> buildBranches(String role) {
         ),
       ],
     ),
+
+    // BOOKING
     StatefulShellBranch(
       routes: [
         GoRoute(
@@ -48,12 +51,15 @@ List<StatefulShellBranch> buildBranches(String role) {
                 child: ListDocterScreen(),
               );
             } else {
-              return BookingScreen();
+              /// PERUBAHAN ADA DI SINI ↓↓↓↓
+              return ListBookingScreen(); 
             }
           },
         ),
       ],
     ),
+
+    // SEARCH / MESSAGE
     StatefulShellBranch(
       routes: [
         GoRoute(
@@ -64,15 +70,15 @@ List<StatefulShellBranch> buildBranches(String role) {
               return ChatListScreen();
             } else {
               final keyword = state.uri.queryParameters['keyword'];
-
               debugPrint("HASIL ====== $keyword");
-
               return SearchScreen(keyword: keyword);
             }
           },
         ),
       ],
     ),
+
+    // NOTIFICATION
     StatefulShellBranch(
       routes: [
         GoRoute(
@@ -84,6 +90,8 @@ List<StatefulShellBranch> buildBranches(String role) {
         ),
       ],
     ),
+
+    // PROFILE
     StatefulShellBranch(
       routes: [
         GoRoute(
