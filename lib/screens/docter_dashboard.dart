@@ -33,6 +33,25 @@ class _DocterDashboard extends State<DocterDashboard> {
     await futureDashboard; // biar refresh indicator menunggu
   }
 
+  Future<void> cancelBooking(String bookingId, String status) async {
+    try {
+      bool res = await updateStatusBooking(bookingId, status);
+
+      // Setelah cancel → Refresh UI
+      if (res) {
+        await refreshDashboard(); // panggil fungsi refresh yg kamu sudah buat
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Booking berhasil di $status")));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = context.watch<SessionManager>();
@@ -104,7 +123,11 @@ class _DocterDashboard extends State<DocterDashboard> {
                       status: item.status,
                       time: item.bookTime,
                       date: item.bookDate,
-                      onCancel: () {},
+                      onCancel: () => cancelBooking(
+                        item.id,
+                        item.status == "confirm" ? "canceled" : "confirm",
+                      ),
+                      onFinish: () => cancelBooking(item.id, "finish"),
                     );
                   }).toList(),
                 );

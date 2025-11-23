@@ -7,6 +7,7 @@ class AppointmentCard extends StatelessWidget {
   final String time;
   final String date;
   final VoidCallback onCancel;
+  final VoidCallback onFinish;
 
   const AppointmentCard({
     super.key,
@@ -15,6 +16,7 @@ class AppointmentCard extends StatelessWidget {
     required this.time,
     required this.date,
     required this.onCancel,
+    required this.onFinish,
   });
 
   @override
@@ -56,6 +58,8 @@ class AppointmentCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: status == "confirm"
                       ? ThemeColors.secondary
+                      : status == "finish"
+                      ? Colors.blue.withValues(alpha: 0.1)
                       : ThemeColors.red100,
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -65,6 +69,8 @@ class AppointmentCard extends StatelessWidget {
                     fontSize: 12,
                     color: status == "confirm"
                         ? ThemeColors.primary
+                        : status == "finish"
+                        ? Colors.blue
                         : ThemeColors.red600,
                     fontWeight: FontWeight.w600,
                   ),
@@ -91,24 +97,68 @@ class AppointmentCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           /// CANCEL BUTTON
-          SizedBox(
-            width: double.infinity,
-            child: TextButton.icon(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.red.withValues(alpha: 0.1),
-                foregroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              status == "confirm"
+                  ? SizedBox(
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.green.withValues(alpha: 0.1),
+                          foregroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: onCancel,
+                        icon: const Icon(Icons.check_circle_outline, size: 18),
+                        label: const Text("Confirm"),
+                      ),
+                    )
+                  : SizedBox(
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.red.withValues(alpha: 0.1),
+                          foregroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: onCancel,
+                        icon: const Icon(Icons.close, size: 18),
+                        label: const Text("Cancel"),
+                      ),
+                    ),
+
+              const SizedBox(width: 10),
+
+              SizedBox(
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
+                    foregroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: onFinish,
+                  icon: const Icon(Icons.check, size: 18),
+                  label: const Text("Finish"),
                 ),
               ),
-              onPressed: onCancel,
-              icon: const Icon(Icons.close, size: 18),
-              label: const Text("Cancel Appointment"),
-            ),
+            ],
           ),
         ],
       ),

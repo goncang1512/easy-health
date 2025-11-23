@@ -193,4 +193,17 @@ class DocterProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> updateStatusDocter(String docterId, String status) async {
+    final result = await HTTP.put(
+      "/api/docter/status/$docterId",
+      body: {"status": status},
+    );
+
+    if (result['status']) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

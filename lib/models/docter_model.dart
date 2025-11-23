@@ -4,11 +4,13 @@ class DocterModel {
   final String specialits;
   final String? photoUrl;
   final String? photoId;
+  final String status;
   final HospitalDocter? hospital;
 
   DocterModel({
     required this.id,
     required this.name,
+    required this.status,
     required this.specialits,
     this.photoUrl,
     this.photoId,
@@ -19,6 +21,7 @@ class DocterModel {
     return DocterModel(
       id: json['id'],
       name: json['name'],
+      status: json['status'],
       specialits: json['specialits'],
       photoUrl: json['photoUrl'],
       photoId: json['photoId'],
