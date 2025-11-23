@@ -111,7 +111,7 @@ class _DocterDashboard extends State<DocterDashboard> {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.only(top: 40),
-                      child: Text("No appointments found."),
+                      child: Text("Belum ada booking"),
                     ),
                   );
                 }
