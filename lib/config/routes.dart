@@ -5,6 +5,7 @@ import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/navigation_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
+
 import 'package:easyhealth/screens/add_docter_screen.dart';
 import 'package:easyhealth/screens/chat_screen.dart';
 import 'package:easyhealth/screens/docter_screen.dart';
@@ -15,7 +16,10 @@ import 'package:easyhealth/screens/login_screen.dart';
 import 'package:easyhealth/screens/register_hospital.dart';
 import 'package:easyhealth/screens/register_screen.dart';
 import 'package:easyhealth/screens/splash_screen.dart';
+
 import 'package:easyhealth/widgets/bottom_navigation_shell.dart';
+import 'package:easyhealth/screens/list_booking_screen.dart'; // ← NEW IMPORT
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +37,7 @@ GoRouter createRouter(String role) {
   final GoRouter router = GoRouter(
     initialLocation: "/splash",
     routes: [
+      /// ROOT SHELL (BOTTOM NAVIGATION)
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           final navProvider = context.read<NavigationProvider>();
@@ -49,6 +54,7 @@ GoRouter createRouter(String role) {
         branches: buildBranches(role),
       ),
 
+      /// LOGIN
       GoRoute(
         path: "/login",
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -57,7 +63,7 @@ GoRouter createRouter(String role) {
             create: (_) => AuthProvider(),
             child: const LoginScreen(),
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          transitionsBuilder: (context, animation, secondary, child) {
             final fromSplash = state.extra == "fromSplash";
             if (fromSplash) {
               return FadeTransition(opacity: animation, child: child);
@@ -67,6 +73,7 @@ GoRouter createRouter(String role) {
         ),
       ),
 
+      /// REGISTER USER
       GoRoute(
         path: "/register",
         name: "Registrasi",
@@ -78,18 +85,19 @@ GoRouter createRouter(String role) {
         },
       ),
 
+      /// SPLASH SCREEN
       GoRoute(
         path: "/splash",
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SplashScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Splash muncul tanpa animasi
+          transitionsBuilder: (context, animation, secondary, child) {
             return child;
           },
         ),
       ),
 
+      /// HOSPITAL PAGE
       GoRoute(
         path: "/hospital/:hospital_id",
         name: "Hospital",
@@ -108,6 +116,7 @@ GoRouter createRouter(String role) {
         },
       ),
 
+      /// DOCTOR PAGE
       GoRoute(
         path: "/docter/:docter_id",
         name: "Docter",
@@ -121,12 +130,14 @@ GoRouter createRouter(String role) {
         },
       ),
 
+      /// REGISTER HOSPITAL
       GoRoute(
         path: "/register/hospital",
         name: "Register Hospital",
         builder: (context, state) => RegisterHospital(),
       ),
 
+      /// ADD DOCTOR
       GoRoute(
         path: "/add-docter",
         name: "Add Docter",
@@ -140,16 +151,17 @@ GoRouter createRouter(String role) {
         },
       ),
 
+      /// EDIT HOSPITAL
       GoRoute(
         path: "/register/hospital/:hospital_id",
         name: "Edit Hospital",
         builder: (context, state) {
           final String hospitalId = state.pathParameters["hospital_id"]!;
-
           return EditHospitalScreen(hospitalId: hospitalId);
         },
       ),
 
+      /// EDIT DOCTOR
       GoRoute(
         path: "/edit-docter/:docter_id",
         name: "Edit docter",
@@ -165,6 +177,7 @@ GoRouter createRouter(String role) {
         },
       ),
 
+      /// CHAT ROOM
       GoRoute(
         path: "/chat-room/:room_id",
         name: "Chat Room",
@@ -176,6 +189,15 @@ GoRouter createRouter(String role) {
             create: (_) => MessageProvider(session: session.session),
             child: ChatScreen(roomId: roomId),
           );
+        },
+      ),
+
+      // ⭐⭐⭐ NEW PAGE — LIST BOOKING ⭐⭐⭐
+      GoRoute(
+        path: "/list-booking",
+        name: "List Booking",
+        builder: (context, state) {
+          return const ListBookingScreen();
         },
       ),
     ],
