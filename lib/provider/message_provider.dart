@@ -17,7 +17,10 @@ class MessageProvider with ChangeNotifier {
   TextEditingController messageController = TextEditingController();
 
   // Create room
-  Future<Map<String, dynamic>> createRoom(String senderId, String receiverId) async {
+  Future<Map<String, dynamic>> createRoom(
+    String senderId,
+    String receiverId,
+  ) async {
     try {
       final data = await HTTP.post(
         "/api/message/room",
@@ -52,7 +55,11 @@ class MessageProvider with ChangeNotifier {
   }
 
   // Send message & update list
-  Future<Map<String, dynamic>> sendMessage(String senderId, String roomId, String text) async {
+  Future<Map<String, dynamic>> sendMessage(
+    String senderId,
+    String roomId,
+    String text,
+  ) async {
     if (text.trim().isEmpty) return {"status": false, "message": "Text empty"};
 
     _isLoading = true;

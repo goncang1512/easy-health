@@ -118,16 +118,21 @@ class _DocterDashboard extends State<DocterDashboard> {
 
                 return Column(
                   children: appointments.map((item) {
-                    return AppointmentCard(
-                      name: item.name,
-                      status: item.status,
-                      time: item.bookTime,
-                      date: item.bookDate,
-                      onCancel: () => cancelBooking(
-                        item.id,
-                        item.status == "confirm" ? "canceled" : "confirm",
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 12,
+                      ), // jarak antar card
+                      child: AppointmentCard(
+                        name: item.name,
+                        status: item.status,
+                        time: item.bookTime,
+                        date: item.bookDate,
+                        onCancel: () => cancelBooking(
+                          item.id,
+                          item.status == "confirm" ? "canceled" : "confirm",
+                        ),
+                        onFinish: () => cancelBooking(item.id, "finish"),
                       ),
-                      onFinish: () => cancelBooking(item.id, "finish"),
                     );
                   }).toList(),
                 );

@@ -5,10 +5,7 @@ import 'package:easyhealth/provider/message_provider.dart';
 class ChatScreen extends StatelessWidget {
   final String roomId;
 
-  const ChatScreen({
-    super.key,
-    required this.roomId,
-  });
+  const ChatScreen({super.key, required this.roomId});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +15,7 @@ class ChatScreen extends StatelessWidget {
     final senderId = messageProvider.session?.user.id ?? "unknown";
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Chat Room - $roomId"),
-      ),
+      appBar: AppBar(title: Text("Chat Room - $roomId")),
       body: Column(
         children: [
           // List pesan
@@ -32,14 +27,16 @@ class ChatScreen extends StatelessWidget {
                 final msg = messageProvider.messages[index];
 
                 return Align(
-                  alignment:
-                      msg.isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: msg.isMe
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color:
-                          msg.isMe ? Colors.green.shade100 : Colors.grey.shade300,
+                      color: msg.isMe
+                          ? Colors.green.shade100
+                          : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(msg.text),
@@ -74,10 +71,10 @@ class ChatScreen extends StatelessWidget {
                       messageProvider.sendMessage(senderId, roomId, text);
                     }
                   },
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
