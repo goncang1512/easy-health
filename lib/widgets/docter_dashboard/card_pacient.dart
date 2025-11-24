@@ -100,7 +100,7 @@ class AppointmentCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              status == "confirm"
+              status == "canceled"
                   ? SizedBox(
                       child: TextButton.icon(
                         style: TextButton.styleFrom(

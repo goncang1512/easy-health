@@ -19,12 +19,12 @@ class DocterModel {
 
   factory DocterModel.fromJson(Map<String, dynamic> json) {
     return DocterModel(
-      id: json['id'],
-      name: json['name'],
-      status: json['status'],
-      specialits: json['specialits'],
-      photoUrl: json['photoUrl'],
-      photoId: json['photoId'],
+      id: json['id'] ?? "",
+      name: json['name'] ?? "",
+      status: json['status'] ?? "",
+      specialits: json['specialits'] ?? "",
+      photoUrl: json['photoUrl'] ?? "",
+      photoId: json['photoId'] ?? "",
       hospital: json['hospital'] != null
           ? HospitalDocter.fromJson(json['hospital'])
           : null,
