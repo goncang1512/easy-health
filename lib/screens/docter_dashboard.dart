@@ -26,6 +26,8 @@ class _DocterDashboard extends State<DocterDashboard> {
   Future<void> refreshDashboard() async {
     final session = context.read<SessionManager>().session;
 
+    print("SESSION DOCTER ==== ${session?.docter?.id}");
+
     setState(() {
       futureDashboard = fetchDoctorDashboard(session!.docter!.id);
     });
