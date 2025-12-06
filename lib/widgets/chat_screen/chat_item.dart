@@ -32,18 +32,16 @@ class ChatItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.05),
               blurRadius: 5,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(avatarUrl),
-              radius: 25,
-            ),
+            CircleAvatar(backgroundImage: NetworkImage(avatarUrl), radius: 25),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -61,6 +59,7 @@ class ChatItem extends StatelessWidget {
                     message,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),

@@ -26,7 +26,7 @@ class MessageProvider with ChangeNotifier {
     try {
       final data = await HTTP.post(
         "/api/message/room",
-        body: {"senderId": senderId, "receiverId": receiverId},
+        body: {"senderId": senderId, "hospitalId": receiverId},
       );
       return {"status": data['status'], "roomId": data["result"]["id"]};
     } catch (error) {

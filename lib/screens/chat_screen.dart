@@ -1,6 +1,7 @@
 import 'package:easyhealth/models/message_model.dart';
 import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -77,7 +78,7 @@ class _ChatScreen extends State<ChatScreenMessage> {
               // Tombol Kirim
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: ThemeColors.primary,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: IconButton(

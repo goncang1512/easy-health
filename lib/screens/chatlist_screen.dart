@@ -1,7 +1,11 @@
+import 'package:easyhealth/provider/chat_provider.dart';
+import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/services/firestore_service.dart';
 import 'package:easyhealth/widgets/chat_screen/chat_item.dart';
 import 'package:easyhealth/widgets/chat_screen/search_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
@@ -12,9 +16,13 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatList extends State<ChatListScreen> {
   final TextEditingController keyword = TextEditingController();
+  final firebaseService = FirestoreService();
 
   @override
   Widget build(BuildContext context) {
+    final hospital = context.watch<SessionManager>().session?.hospital;
+    final chat = context.watch<ChatProvider>();
+
     return Scaffold(
       appBar: const BarChatLIst(),
       body: SingleChildScrollView(
@@ -28,49 +36,49 @@ class _ChatList extends State<ChatListScreen> {
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                children: [
+              child: StreamBuilder(
+                stream: firebaseService.getRoomsByHospitalId(
+                  hospital?.id ?? "",
+                ),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                  /// CHAT 1
-                  ChatItem(
-                    avatarUrl:
-                        "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Goncang",
-                    message: "Hello",
-                    time: "10:00 PM",
-                    roomId: "room_1", // ✅ WAJIB ADA
-                  ),
+                  final rooms = snapshot.data!;
 
-                  /// CHAT 2
-                  ChatItem(
-                    avatarUrl:
-                        "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Admin",
-                    message: "Pesan dari admin",
-                    time: "09:30 PM",
-                    roomId: "room_2",
-                  ),
+                  if (rooms.isEmpty) {
+                    return const Text("Tidak ada chat");
+                  }
 
-                  /// CHAT 3
-                  ChatItem(
-                    avatarUrl:
-                        "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Dokter",
-                    message: "Halo, ada yang bisa dibantu?",
-                    time: "08:15 PM",
-                    roomId: "room_3",
-                  ),
+                  return Column(
+                    children: rooms.map((room) {
+                      final roomId = room["id"];
+                      final userAId = room["userAId"]; // user pasien
 
-                  /// CHAT 4
-                  ChatItem(
-                    avatarUrl:
-                        "https://i.pinimg.com/736x/67/e6/36/67e6360cb61bc90fb9414a9537f41b7c.jpg",
-                    name: "Customer Service",
-                    message: "Silakan tunggu ya",
-                    time: "07:45 PM",
-                    roomId: "room_4",
-                  ),
-                ],
+                      return FutureBuilder<ChatUser>(
+                        future: chat.getUser(userAId),
+                        builder: (context, userSnap) {
+                          if (!userSnap.hasData) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final user = userSnap.data;
+
+                          return ChatItem(
+                            avatarUrl:
+                                user?.image ??
+                                "https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg",
+                            name: user?.name ?? "",
+                            message: room['latestMessage'],
+                            time: "",
+                            roomId: roomId,
+                          );
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ),
           ],

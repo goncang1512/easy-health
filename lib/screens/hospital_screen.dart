@@ -72,7 +72,7 @@ class _HospitalPage extends State<HospitalScreen> {
 
               final Map<String, dynamic> result = await message.createRoom(
                 session.session?.user.id ?? "",
-                admin[0].user.id,
+                widget.hospitalId,
               );
 
               if (result['status']) {
