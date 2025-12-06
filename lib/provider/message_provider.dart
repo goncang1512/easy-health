@@ -1,4 +1,6 @@
+import 'package:easyhealth/models/message_model.dart';
 import 'package:easyhealth/models/session_models.dart';
+import 'package:easyhealth/services/firestore_service.dart';
 import 'package:easyhealth/utils/fetch.dart';
 import 'package:flutter/material.dart';
 
@@ -84,6 +86,14 @@ class MessageProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  final FirestoreService _firestore = FirestoreService();
+
+  Stream<List<MessageModel>> getMessages(String roomId) {
+    Stream<List<MessageModel>> data = _firestore.getMessageRoom(roomId);
+
+    return data;
   }
 }
 

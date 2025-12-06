@@ -1,3 +1,4 @@
+import 'package:easyhealth/models/message_model.dart';
 import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,41 @@ class _ChatScreen extends State<ChatScreenMessage> {
         ),
       ),
 
-      body: Center(child: Text("Chat room")),
+      body: StreamBuilder<List<MessageModel>>(
+        stream: provider.getMessages(widget.roomId),
+        builder: (context, snapshot) {
+          final messages = snapshot.data!;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final msg = messages[index];
+
+              return Align(
+                alignment:
+                    msg.senderId ==
+                        context.read<SessionManager>().session!.user.id
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color:
+                        msg.senderId ==
+                            context.read<SessionManager>().session!.user.id
+                        ? Colors.green[200]
+                        : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(msg.text ?? ""),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
