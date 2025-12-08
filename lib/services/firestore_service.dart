@@ -14,7 +14,7 @@ class FirestoreService {
         .collection("room")
         .doc(roomId)
         .collection("message")
-        .orderBy("createdAt", descending: false)
+        .orderBy("createdAt", descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs
@@ -28,28 +28,29 @@ class FirestoreService {
         .collection("room")
         .where("hospitalId", isEqualTo: hospitalId)
         .snapshots()
-        .asyncMap((roomsSnapshot) async {
-          List<Map<String, dynamic>> result = [];
-
-          for (var roomDoc in roomsSnapshot.docs) {
-            final latestMessageSnap = await roomDoc.reference
+        .asyncMap((roomSnapshot) async {
+          // Jalankan query subcollection secara paralel (tanpa for)
+          final futures = roomSnapshot.docs.map((roomDoc) async {
+            final msgSnap = await roomDoc.reference
                 .collection("message")
                 .orderBy("createdAt", descending: true)
                 .limit(1)
                 .get();
 
-            final latestMessage = latestMessageSnap.docs.isNotEmpty
-                ? latestMessageSnap.docs.first.data()
-                : null;
+            final latestMsg = msgSnap.docs.isNotEmpty
+                ? msgSnap.docs.first.data()
+                : {"text": "", "createdAt": null};
 
-            result.add({
+            return {
               "id": roomDoc.id,
               ...roomDoc.data(),
-              "latestMessage": latestMessage!['text'],
-            });
-          }
+              "latestMessage": latestMsg["text"],
+              "latestMessageTime": latestMsg["createdAt"],
+            };
+          }).toList();
 
-          return result;
+          // Tunggu semua async task selesai
+          return Future.wait(futures);
         });
   }
 }

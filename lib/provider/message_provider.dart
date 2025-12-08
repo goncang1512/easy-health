@@ -95,6 +95,12 @@ class MessageProvider with ChangeNotifier {
 
     return data;
   }
+
+  Future getHospitalRoomChatName(String roomId) async {
+    final res = await HTTP.get("/api/message/hospital/$roomId");
+
+    return res['result'];
+  }
 }
 
 class Message {

@@ -11,12 +11,33 @@ class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
   @override
-  State<ChatListScreen> createState() => _ChatList();
+  State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatList extends State<ChatListScreen> {
+class _ChatListScreenState extends State<ChatListScreen> {
   final TextEditingController keyword = TextEditingController();
   final firebaseService = FirestoreService();
+
+  // cache user biar tidak fetch terus menerus
+  final Map<String, ChatUser> userCache = {};
+  bool isFetchingUsers = false;
+
+  Future<void> fetchUsersOnce(List<dynamic> rooms, ChatProvider chat) async {
+    if (isFetchingUsers) return;
+    isFetchingUsers = true;
+
+    final ids = rooms.map((e) => e["userAId"]).toSet().toList();
+
+    for (final id in ids) {
+      if (!userCache.containsKey(id)) {
+        final user = await chat.getUser(id);
+        userCache[id] = user;
+      }
+    }
+
+    isFetchingUsers = false;
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +45,7 @@ class _ChatList extends State<ChatListScreen> {
     final chat = context.watch<ChatProvider>();
 
     return Scaffold(
-      appBar: const BarChatLIst(),
+      appBar: BarChatList(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -34,6 +55,7 @@ class _ChatList extends State<ChatListScreen> {
               placeholder: "Cari pesan",
             ),
 
+            // ================= STREAM BUILDER =================
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: StreamBuilder(
@@ -48,33 +70,47 @@ class _ChatList extends State<ChatListScreen> {
                   final rooms = snapshot.data!;
 
                   if (rooms.isEmpty) {
-                    return const Text("Tidak ada chat");
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text("Tidak ada chat"),
+                    );
                   }
+
+                  // Fetch semua data user sekali saja
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    fetchUsersOnce(rooms, chat);
+                  });
 
                   return Column(
                     children: rooms.map((room) {
                       final roomId = room["id"];
-                      final userAId = room["userAId"]; // user pasien
+                      final userAId = room["userAId"];
+                      final user = userCache[userAId];
 
-                      return FutureBuilder<ChatUser>(
-                        future: chat.getUser(userAId),
-                        builder: (context, userSnap) {
-                          if (!userSnap.hasData) {
-                            return const SizedBox.shrink();
-                          }
+                      if (user == null) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          child: const Row(
+                            children: [
+                              CircleAvatar(radius: 20),
+                              SizedBox(width: 12),
+                              Expanded(child: LinearProgressIndicator()),
+                            ],
+                          ),
+                        );
+                      }
 
-                          final user = userSnap.data;
-
-                          return ChatItem(
-                            avatarUrl:
-                                user?.image ??
-                                "https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg",
-                            name: user?.name ?? "",
-                            message: room['latestMessage'],
-                            time: "",
-                            roomId: roomId,
-                          );
-                        },
+                      return ChatItem(
+                        avatarUrl:
+                            user.image ??
+                            "https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg",
+                        name: user.name,
+                        message: room['latestMessage'],
+                        time: "",
+                        roomId: roomId,
                       );
                     }).toList(),
                   );
@@ -88,8 +124,8 @@ class _ChatList extends State<ChatListScreen> {
   }
 }
 
-class BarChatLIst extends StatelessWidget implements PreferredSizeWidget {
-  const BarChatLIst({super.key});
+class BarChatList extends StatelessWidget implements PreferredSizeWidget {
+  const BarChatList({super.key});
 
   @override
   Widget build(BuildContext context) {
