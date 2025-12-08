@@ -1,3 +1,4 @@
+import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class DoctorCard extends StatelessWidget {
@@ -75,7 +76,7 @@ class DoctorCard extends StatelessWidget {
                     specialty,
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.green,
+                      color: ThemeColors.primary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -108,7 +109,7 @@ class DoctorCard extends StatelessWidget {
             ElevatedButton(
               onPressed: onBookTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: ThemeColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

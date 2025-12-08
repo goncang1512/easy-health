@@ -17,10 +17,15 @@ class RoomModel {
 class MessageModel {
   final String? id;
   final String? text;
+  final String? senderId;
 
-  MessageModel({this.id, this.text});
+  MessageModel({this.id, this.text, this.senderId});
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
-    return MessageModel(id: json['id'], text: json['text']);
+    return MessageModel(
+      id: json['id'],
+      text: json['text'],
+      senderId: json['senderId'],
+    );
   }
 }

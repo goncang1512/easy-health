@@ -27,7 +27,6 @@ class SocialSign {
       final GoogleSignInAuthentication auth = account.authentication;
       return auth.idToken;
     } catch (e) {
-      print("Google login error: $e");
       return null;
     }
   }
