@@ -1,7 +1,6 @@
 import 'package:easyhealth/provider/admin_provider.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
-import 'package:easyhealth/screens/booking_screen.dart';
 import 'package:easyhealth/screens/chatlist_screen.dart';
 import 'package:easyhealth/screens/dashboard_screen.dart';
 import 'package:easyhealth/screens/docter_dashboard.dart';
@@ -11,7 +10,6 @@ import 'package:easyhealth/screens/list_docter_screen.dart';
 import 'package:easyhealth/screens/notif_screen.dart';
 import 'package:easyhealth/screens/profile_screen.dart';
 import 'package:easyhealth/screens/search_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +53,7 @@ List<StatefulShellBranch> buildBranches(String role) {
               );
             } else {
               /// PERUBAHAN ADA DI SINI ↓↓↓↓
-              return ListBookingScreen(); 
+              return ListBookingScreen();
             }
           },
         ),
@@ -73,7 +71,6 @@ List<StatefulShellBranch> buildBranches(String role) {
               return ChatListScreen();
             } else {
               final keyword = state.uri.queryParameters['keyword'];
-              debugPrint("HASIL ====== $keyword");
               return SearchScreen(keyword: keyword);
             }
           },

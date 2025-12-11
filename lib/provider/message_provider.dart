@@ -1,4 +1,6 @@
+import 'package:easyhealth/models/message_model.dart';
 import 'package:easyhealth/models/session_models.dart';
+import 'package:easyhealth/services/firestore_service.dart';
 import 'package:easyhealth/utils/fetch.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +19,14 @@ class MessageProvider with ChangeNotifier {
   TextEditingController messageController = TextEditingController();
 
   // Create room
-  Future<Map<String, dynamic>> createRoom(String senderId, String receiverId) async {
+  Future<Map<String, dynamic>> createRoom(
+    String senderId,
+    String receiverId,
+  ) async {
     try {
       final data = await HTTP.post(
         "/api/message/room",
-        body: {"senderId": senderId, "receiverId": receiverId},
+        body: {"senderId": senderId, "hospitalId": receiverId},
       );
       return {"status": data['status'], "roomId": data["result"]["id"]};
     } catch (error) {
@@ -52,7 +57,11 @@ class MessageProvider with ChangeNotifier {
   }
 
   // Send message & update list
-  Future<Map<String, dynamic>> sendMessage(String senderId, String roomId, String text) async {
+  Future<Map<String, dynamic>> sendMessage(
+    String senderId,
+    String roomId,
+    String text,
+  ) async {
     if (text.trim().isEmpty) return {"status": false, "message": "Text empty"};
 
     _isLoading = true;
@@ -77,6 +86,20 @@ class MessageProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  final FirestoreService _firestore = FirestoreService();
+
+  Stream<List<MessageModel>> getMessages(String roomId) {
+    Stream<List<MessageModel>> data = _firestore.getMessageRoom(roomId);
+
+    return data;
+  }
+
+  Future getHospitalRoomChatName(String roomId) async {
+    final res = await HTTP.get("/api/message/hospital/$roomId");
+
+    return res['result'];
   }
 }
 

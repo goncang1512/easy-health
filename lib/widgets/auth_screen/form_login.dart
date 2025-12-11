@@ -42,6 +42,7 @@ class _FormLogin extends State<FormLogin> {
 
       if (response?["status"] == false) {
         Alert.showBanner("Registering ${response?["message"]}", context);
+        return;
       }
     }
 

@@ -1,4 +1,5 @@
 import 'package:easyhealth/provider/booking_provider.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ class CreateBooking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final booking = context.watch<BookingProvider>();
+    final session = context.watch<SessionManager>();
 
     return Container(
       decoration: BoxDecoration(
@@ -30,10 +32,14 @@ class CreateBooking extends StatelessWidget {
               onPressed: booking.isLoading
                   ? null
                   : () async {
-                      final data = await booking.onSubmit(hospitalId, docterId);
+                      final data = await booking.onSubmit(
+                        hospitalId,
+                        docterId,
+                        session.session?.user.id ?? "",
+                      );
 
                       if (data['status'] == false) {
-                        Alert.showBanner("$data['message']", context);
+                        Alert.showBanner("${data['message']}", context);
                         return;
                       }
 

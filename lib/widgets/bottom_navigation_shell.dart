@@ -1,3 +1,4 @@
+import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -126,13 +127,13 @@ class BottomNavigationShell extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isActive ? Colors.green : Colors.black,
+              color: isActive ? ThemeColors.primary : Colors.black,
               size: screenWidth * 0.06,
             ),
             Text(
               label,
               style: TextStyle(
-                color: isActive ? Colors.green : Colors.black,
+                color: isActive ? ThemeColors.primary : Colors.black,
                 fontSize: 14,
               ),
             ),

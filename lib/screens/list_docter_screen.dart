@@ -1,5 +1,6 @@
 import 'package:easyhealth/models/docter_model.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
+import 'package:easyhealth/utils/theme.dart';
 import 'package:easyhealth/widgets/dokter_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ class ListDocterScreen extends StatefulWidget {
 
 class _ListDocterScreen extends State<ListDocterScreen> {
   late Future<List<DocterModel>> _futureDocters;
+  late String tabs = 'verified';
 
   @override
   void initState() {
@@ -47,6 +49,12 @@ class _ListDocterScreen extends State<ListDocterScreen> {
     }
   }
 
+  void changeTabs(String tabsValue) {
+    setState(() {
+      tabs = tabsValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,29 +85,129 @@ class _ListDocterScreen extends State<ListDocterScreen> {
             }
 
             final docters = snapshot.data;
+            final doctersFilter = docters!
+                .where((d) => d.status == tabs)
+                .toList();
 
             return Padding(
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: 12,
                 vertical: 16,
               ),
-              child: ListView.builder(
-                itemCount: docters?.length,
-                itemBuilder: (context, index) {
-                  final doctor = docters?[index];
-                  return DoctorCard(
-                    onBookTap: () => updateDocter(
-                      doctor?.id ?? "",
-                      doctor?.status == "verified" ? "unverified" : "verified",
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton.icon(
+                          style: TextButton.styleFrom(
+                            backgroundColor: tabs == "verified"
+                                ? ThemeColors.primary.withValues(alpha: 0.1)
+                                : Colors.transparent,
+                            foregroundColor: tabs == "verified"
+                                ? ThemeColors.primary.withValues(alpha: 0.1)
+                                : Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () => changeTabs("verified"),
+                          label: Text(
+                            "Verified",
+                            style: TextStyle(
+                              color: tabs == "verified"
+                                  ? ThemeColors.primary
+                                  : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: TextButton.icon(
+                          style: TextButton.styleFrom(
+                            backgroundColor: tabs == "unverified"
+                                ? ThemeColors.primary.withValues(alpha: 0.1)
+                                : Colors.transparent,
+                            foregroundColor: tabs == "unverified"
+                                ? ThemeColors.primary.withValues(alpha: 0.1)
+                                : Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () => changeTabs("unverified"),
+                          label: Text(
+                            "Unverified",
+                            style: TextStyle(
+                              color: tabs == "unverified"
+                                  ? ThemeColors.primary
+                                  : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Expanded(
+                    child: Column(
+                      children: doctersFilter.map((item) {
+                        return DoctorCard(
+                          onBookTap: () => updateDocter(
+                            item.id,
+                            item.status == "verified"
+                                ? "unverified"
+                                : "verified",
+                          ),
+                          buttonText: item.status,
+                          showHospital: false,
+                          imageUrl: item.photoUrl ?? "",
+                          name: item.name,
+                          specialty: item.specialits,
+                          hospital: item.hospital?.name ?? "",
+                        );
+                      }).toList(),
                     ),
-                    buttonText: doctor?.status ?? "unverified",
-                    showHospital: false,
-                    imageUrl: doctor?.photoUrl ?? "",
-                    name: doctor?.name ?? "",
-                    specialty: doctor?.specialits ?? "",
-                    hospital: doctor?.hospital?.name ?? "",
-                  );
-                },
+                    // child: ListView.builder(
+                    //   itemCount: docters?.length,
+                    //   itemBuilder: (context, index) {
+                    //     final filtered = docters!
+                    //         .where((d) => d.status == tabs)
+                    //         .toList();
+
+                    //     final doctor = filtered[index];
+
+                    //     return DoctorCard(
+                    //       onBookTap: () => updateDocter(
+                    //         doctor.id,
+                    //         doctor.status == "verified"
+                    //             ? "unverified"
+                    //             : "verified",
+                    //       ),
+                    //       buttonText: doctor.status,
+                    //       showHospital: false,
+                    //       imageUrl: doctor.photoUrl ?? "",
+                    //       name: doctor.name,
+                    //       specialty: doctor.specialits,
+                    //       hospital: doctor.hospital?.name ?? "",
+                    //     );
+                    //   },
+                    // ),
+                  ),
+                ],
               ),
             );
           },

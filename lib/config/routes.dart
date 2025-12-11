@@ -187,7 +187,7 @@ GoRouter createRouter(String role) {
 
           return ChangeNotifierProvider(
             create: (_) => MessageProvider(session: session.session),
-            child: ChatScreen(roomId: roomId),
+            child: ChatScreenMessage(roomId: roomId),
           );
         },
       ),

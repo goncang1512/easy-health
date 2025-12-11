@@ -17,6 +17,9 @@ class AuthProvider extends ChangeNotifier {
     required String password,
     required String confirmPassword,
   }) async {
+    _loading = true;
+    notifyListeners();
+
     final response = await HTTP.post(
       "/api/sign/register",
       body: {
@@ -26,22 +29,37 @@ class AuthProvider extends ChangeNotifier {
         "confirmPassword": confirmPassword.trim(),
       },
     );
+    if (response['status'] == false) {
+      _loading = false;
+      notifyListeners();
+
+      return {"status": false, "message": response['message'], "result": null};
+    }
+
     _loading = false;
+    notifyListeners();
 
     return response;
   }
 
   Future login({required String email, required String password}) async {
     _loading = true;
-
+    notifyListeners();
     final data = await HTTP.post(
       "/api/sign/login",
       body: {"email": email.trim(), "password": password.trim()},
     );
 
-    await statusUser(data['result']['user']['id'], "online");
+    if (data['status'] == false) {
+      _loading = false;
+      notifyListeners();
 
+      return {"status": false, "message": data['message'], "result": null};
+    }
+
+    await statusUser(data['result']['user']['id'], "online");
     _loading = false;
+    notifyListeners();
 
     return data;
   }
