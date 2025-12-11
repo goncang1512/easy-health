@@ -2,9 +2,6 @@ import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import '../models/booking_model.dart';
 
-// IMPORT CHAT PAGE
-import 'chat/chat_page.dart';
-
 class DetailBookingPage extends StatelessWidget {
   final BookingModel booking;
 
@@ -45,7 +42,7 @@ class DetailBookingPage extends StatelessWidget {
                 color: Colors.black12,
                 blurRadius: 4,
                 offset: const Offset(0, 2),
-              )
+              ),
             ],
           ),
           child: Column(
@@ -58,20 +55,27 @@ class DetailBookingPage extends StatelessWidget {
                   Text(
                     "Booking ID : ${booking.bookingId}",
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: ThemeColors.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       booking.status,
-                      style: const TextStyle(color: ThemeColors.secondary, fontSize: 12),
+                      style: const TextStyle(
+                        color: ThemeColors.secondary,
+                        fontSize: 12,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
 
@@ -96,12 +100,16 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorName,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.grey),
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -131,10 +139,11 @@ class DetailBookingPage extends StatelessWidget {
                       child: Text(
                         "Harap datang 15 menit lebih awal dari waktu perjanjian",
                         style: TextStyle(
-                            color: ThemeColors.primary,
-                            fontWeight: FontWeight.w600),
+                          color: ThemeColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -153,17 +162,9 @@ class DetailBookingPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: ThemeColors.primary),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ChatPage(
-                                hospitalName: booking.hospital,
-                                bookingId: booking.bookingId,
-                              )),
-                    );
-                  },
+                    backgroundColor: ThemeColors.primary,
+                  ),
+                  onPressed: () {},
                   child: const Text("Hubungi Rumah Sakit"),
                 ),
               ),
@@ -175,8 +176,9 @@ class DetailBookingPage extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red)),
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                  ),
                   onPressed: () {
                     /// 👇 Hapus data booking
                     onDelete();
@@ -186,7 +188,7 @@ class DetailBookingPage extends StatelessWidget {
                   },
                   child: const Text("Canceled"),
                 ),
-              )
+              ),
             ],
           ),
         ),
