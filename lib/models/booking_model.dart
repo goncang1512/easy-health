@@ -1,3 +1,5 @@
+import 'package:easyhealth/models/session_models.dart';
+
 class BookingModel {
   final String bookingId;
   final String status;
@@ -28,17 +30,17 @@ class BookingModel {
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
-      bookingId: json['bookingId'],
+      bookingId: json['bookingNumber'],
       status: json['status'],
-      doctorName: json['doctorName'],
-      doctorSpecialist: json['doctorSpecialist'],
-      doctorImage: json['doctorImage'],
-      hospital: json['hospital'],
-      date: json['date'],
-      time: json['time'],
-      queueNumber: json['queueNumber'],
-      price: json['price'],
-      paymentMethod: json['paymentMethod'],
+      doctorName: json['docter']['user']['name'],
+      doctorSpecialist: json['docter']['specialits'],
+      doctorImage: json['docter']['photoUrl'],
+      hospital: json['docter']['hospital']['name'],
+      date: json['bookDate'],
+      time: json['bookTime'],
+      queueNumber: json['bookingNumber'],
+      price: json['price']?? '0',
+      paymentMethod: json['paymentMethod']?? 'Unknown', 
     );
   }
 
