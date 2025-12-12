@@ -84,9 +84,7 @@ List<StatefulShellBranch> buildBranches(String role) {
         GoRoute(
           name: "Notification",
           path: '/notification',
-          builder: (c, s) {
-            return const NotifScreen();
-          },
+          builder: (context, state) => const NotifScreen(),
         ),
       ],
     ),
