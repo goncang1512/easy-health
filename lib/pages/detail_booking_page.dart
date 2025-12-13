@@ -1,6 +1,10 @@
+import 'package:easyhealth/screens/chat_screen.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import '../models/booking_model.dart';
+import 'package:provider/provider.dart';
+import '../provider/message_provider.dart';
+import '../utils/fetch.dart';
 
 class DetailBookingPage extends StatelessWidget {
   final BookingModel booking;
@@ -164,7 +168,34 @@ class DetailBookingPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeColors.primary,
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final messageProvider = context.read<MessageProvider>();
+                    final senderId = messageProvider.session!.user.id;
+                    final hospitalId = booking.hospitalId;
+                    if (hospitalId == null) return;
+
+                    // 1️⃣ Buat / ambil room RS
+                    final room = await messageProvider.createRoom(
+                      senderId,
+                      hospitalId,
+                    );
+                    if (room['status'] == true) {
+                      final roomId = room['roomId'];
+                      // 2️⃣ Ambil chat RS tersebut
+                      await messageProvider.fetchChat(roomId);
+
+                      // 3️⃣ Masuk ke ChatScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatScreenMessage(
+                            roomId: roomId, // backend roomId
+                          ),
+                        ),
+                      );
+                    }
+                  },
+
                   child: const Text("Hubungi Rumah Sakit"),
                 ),
               ),
@@ -179,12 +210,36 @@ class DetailBookingPage extends StatelessWidget {
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
                   ),
-                  onPressed: () {
-                    /// 👇 Hapus data booking
-                    onDelete();
+                  onPressed: () async {
+                    try {
+                      // Panggil API cancel booking
+                      final result = await HTTP.post(
+                        "/api/booking/cancel/${booking.bookingId}",
+                      );
 
-                    /// 👇 Kembali ke halaman sebelumnya
-                    Navigator.pop(context);
+                      // Pastikan result punya key 'status'
+                      if (result is Map<String, dynamic> &&
+                          result['status'] == true) {
+                        // Hanya kembali dan refresh list
+                        onDelete(); // callback ke ListBookingScreen
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result['message'] ?? "Gagal membatalkan booking",
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      // Tangani error network / json decode
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Gagal membatalkan booking: $e"),
+                        ),
+                      );
+                    }
                   },
                   child: const Text("Canceled"),
                 ),
