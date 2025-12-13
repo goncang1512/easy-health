@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../utils/theme.dart';
 import '../models/booking_model.dart';
 import '../widgets/booking_card.dart';
-import '../utils/fetch.dart'; // pastikan ada
+import '../utils/fetch.dart';
 import 'package:provider/provider.dart';
+import '../pages/detail_booking_page.dart';
 
 class ListBookingScreen extends StatefulWidget {
   const ListBookingScreen({super.key});
@@ -14,27 +15,41 @@ class ListBookingScreen extends StatefulWidget {
 }
 
 class _ListBookingScreenState extends State<ListBookingScreen> {
-  // ==============================
-  // 🔥 Ambil data dari API backend
-  // ==============================
-  Future<List<BookingModel>> fetchBookingFromApi() async {
-      final session = context.read<SessionManager>();
-      final response = await HTTP.get("/api/booking/list/${session.session?.user.id}");
-      print("Response fetch booking: $response");
-      if (response['statusCode'] == 200) {
-        List<dynamic> data = response['result']; 
-          return data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>)).toList();
-      } else {
-        return [];
-      }
+  late Future<List<BookingModel>> bookingsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    bookingsFuture = fetchBookingFromApi();
   }
 
-  // =======================
-  // 🔥 Hapus booking lokal
-  // =======================
+  Future<List<BookingModel>> fetchBookingFromApi() async {
+    final session = context.read<SessionManager>();
+    final response = await HTTP.get("/api/booking/list/${session.session?.user.id}");
+    
+    if (response['statusCode'] == 200) {
+      List<dynamic> data = response['result'];
+      // Filter booking yang statusnya bukan "canceled"
+      List<BookingModel> bookings = data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>))
+      .where((b) => b.status.toLowerCase() != 'canceled') // ✅ filter
+      .toList();
+      
+      return bookings;
+      } else {
+        return [];
+        }
+  }
+
+
   void deleteBooking(List<BookingModel> bookings, String id) {
     setState(() {
       bookings.removeWhere((b) => b.bookingId == id);
+    });
+  }
+
+  Future<void> refreshBookings() async {
+    setState(() {
+      bookingsFuture = fetchBookingFromApi();
     });
   }
 
@@ -48,34 +63,57 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
         centerTitle: true,
       ),
       body: FutureBuilder<List<BookingModel>>(
-        future: fetchBookingFromApi(),
+        future: bookingsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            final bookings = snapshot.data ?? [];
+          }
 
-            if (bookings.isEmpty) {
-              return const Center(
-                child: Text(
-                  "Tidak ada booking",
-                  style: TextStyle(fontSize: 16),
-                ),
-              );
-            }
+          final bookings = snapshot.data ?? [];
 
-            return ListView.builder(
+          if (bookings.isEmpty) {
+            return const Center(
+              child: Text(
+                "Tidak ada booking",
+                style: TextStyle(fontSize: 16),
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: refreshBookings,
+            child: ListView.builder(
               itemCount: bookings.length,
               itemBuilder: (context, index) {
                 return BookingCard(
                   booking: bookings[index],
-                  onDelete: () => deleteBooking(bookings, bookings[index].bookingId),
+                  onDelete: () {
+                    deleteBooking(bookings, bookings[index].bookingId);
+                    refreshBookings();
+                  },
+                  onTap: () async {
+                    final deletedId = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DetailBookingPage(
+                          booking: bookings[index],
+                          onDelete: () {},
+                        ),
+                      ),
+                  );
+                    if (deletedId != null && deletedId is String) {
+                      setState(() {
+                        bookings.removeWhere((b) => b.bookingId == deletedId);
+                      });
+                    }
+                  },
+
                 );
               },
-            );
-          }
+            ),
+          );
         },
       ),
     );

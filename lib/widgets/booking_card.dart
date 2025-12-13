@@ -1,33 +1,22 @@
 import 'package:flutter/material.dart';
 import '../models/booking_model.dart';
-import '../pages/detail_booking_page.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingModel booking;
-
-  // 👇 Tambahkan callback
   final VoidCallback onDelete;
+  final VoidCallback? onTap;
 
   const BookingCard({
     super.key,
     required this.booking,
     required this.onDelete,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => DetailBookingPage(
-              booking: booking,
-              onDelete: onDelete, // 👈 wajib
-            ),
-          ),
-        );
-      },
+      onTap: onTap, // 👈 memicu navigasi ke detail
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         padding: const EdgeInsets.all(16),
@@ -46,7 +35,7 @@ class BookingCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Booking ID + Status
+            // Booking ID + Status
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -69,8 +58,7 @@ class BookingCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-
-            /// Doctor card
+            // Doctor card
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -89,7 +77,6 @@ class BookingCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -108,9 +95,7 @@ class BookingCard extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 10),
-
             Text(booking.hospital, style: const TextStyle(fontSize: 13)),
             Text(booking.date, style: const TextStyle(fontSize: 13)),
             Text(booking.time, style: const TextStyle(fontSize: 13)),
