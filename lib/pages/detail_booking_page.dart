@@ -194,20 +194,33 @@ SizedBox(
     style: OutlinedButton.styleFrom(
       foregroundColor: Colors.red,
       side: const BorderSide(color: Colors.red),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
     ),
     onPressed: () async {
       try {
-        // Panggil API cancel booking
-        final result = await HTTP.post("/api/booking/cancel/${booking.bookingId}");
+        // 1️⃣ Panggil API cancel booking dengan HTTP.delete
+        final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
 
-        // Pastikan result punya key 'status'
+        // 2️⃣ Cek apakah response sukses
         if (result is Map<String, dynamic> && result['status'] == true) {
-          // Hanya kembali dan refresh list
-          onDelete(); // callback ke ListBookingScreen
+          // Callback untuk update list booking
+          onDelete();
+
+          // Tutup detail page
           Navigator.pop(context);
-        } else {
+
+          // Optional: tampilkan pesan sukses
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result['message'] ?? "Gagal membatalkan booking")),
+            const SnackBar(content: Text("Booking berhasil dibatalkan")),
+          );
+        } else {
+          // Jika gagal, tampilkan pesan error dari backend
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text(result['message'] ?? "Gagal membatalkan booking")),
           );
         }
       } catch (e) {
@@ -217,7 +230,10 @@ SizedBox(
         );
       }
     },
-    child: const Text("Canceled"),
+    child: const Text(
+      "Canceled",
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    ),
   ),
 ),
 
