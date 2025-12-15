@@ -1,4 +1,5 @@
 class BookingModel {
+  final String id;
   final String bookingId;
   final String status;
   final String doctorName;
@@ -21,6 +22,7 @@ class BookingModel {
   final String? updatedAt;
 
   BookingModel({
+    required this.id,
     required this.bookingId,
     required this.status,
     required this.doctorName,
@@ -46,6 +48,7 @@ class BookingModel {
     final hospital = docter['hospital'] ?? {};
 
     return BookingModel(
+      id: json['id'], // booking_id ASLI
       bookingId: json['bookingNumber'] ?? '',
       status: json['status'] ?? '',
       doctorName: user['name'] ?? '',
@@ -68,6 +71,7 @@ class BookingModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'bookingId': bookingId,
       'status': status,
       'doctorName': doctorName,

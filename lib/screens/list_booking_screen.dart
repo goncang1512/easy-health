@@ -45,7 +45,7 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
 
   void deleteBooking(List<BookingModel> bookings, String id) {
     setState(() {
-      bookings.removeWhere((b) => b.bookingId == id);
+      bookings.removeWhere((b) => b.id == id); // 🔴 UBAH
     });
   }
 
@@ -89,7 +89,10 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
                 return BookingCard(
                   booking: bookings[index],
                   onDelete: () {
-                    deleteBooking(bookings, bookings[index].bookingId);
+                    deleteBooking(
+                      bookings,
+                      bookings[index].id, 
+                    );
                     refreshBookings();
                   },
                   onTap: () async {
@@ -104,7 +107,9 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
                     );
                     if (deletedId != null && deletedId is String) {
                       setState(() {
-                        bookings.removeWhere((b) => b.bookingId == deletedId);
+                        bookings.removeWhere(
+                          (b) => b.id == deletedId, 
+                        );
                       });
                     }
                   },
