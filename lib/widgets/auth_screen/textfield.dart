@@ -1,3 +1,4 @@
+import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class TextFieldLogin extends StatefulWidget {
@@ -73,7 +74,10 @@ class _TextFieldLogin extends State<TextFieldLogin> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.green, width: 1.5),
+              borderSide: const BorderSide(
+                color: ThemeColors.primary,
+                width: 1.5,
+              ),
             ),
             border: OutlineInputBorder(),
           ),
