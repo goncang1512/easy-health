@@ -183,7 +183,6 @@ class DetailBookingPage extends StatelessWidget {
                       final roomId = room['roomId'];
                       // 2️⃣ Ambil chat RS tersebut
                       await messageProvider.fetchChat(roomId);
-
                       // 3️⃣ Masuk ke ChatScreen
                       Navigator.push(
                         context,

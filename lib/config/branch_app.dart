@@ -1,4 +1,5 @@
 import 'package:easyhealth/provider/admin_provider.dart';
+import 'package:easyhealth/provider/chat_provider.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/chatlist_screen.dart';
@@ -68,7 +69,10 @@ List<StatefulShellBranch> buildBranches(String role) {
           path: role == "Admin" ? "/message" : '/search',
           builder: (context, state) {
             if (role == "Admin") {
-              return ChatListScreen();
+              return ChangeNotifierProvider(
+                create: (_) => ChatProvider(),
+                child: ChatListScreen(),
+              );
             } else {
               final keyword = state.uri.queryParameters['keyword'];
               return SearchScreen(keyword: keyword);
