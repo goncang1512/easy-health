@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Warna hijau utama diambil dari screenshot
     final Color primaryGreen = const Color(0xFF1CB079);
 
     return Scaffold(
@@ -13,6 +13,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Konten Utama
           SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 30), // Tambahan padding bawah agar aman
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -70,7 +71,7 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // 2. KATEGORI SECTION
+                // 2. KATEGORI SECTION (SUDAH DIPERBAIKI)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
@@ -84,9 +85,33 @@ class HomeScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildCategoryItem("Booking", Icons.apartment, primaryGreen),
-                          _buildCategoryItem("Daftar Dokter", Icons.person_search, primaryGreen),
-                          _buildCategoryItem("Daftar RS", Icons.local_hospital, primaryGreen),
+                          // Tombol Booking
+                          _buildCategoryItem(
+                            title: "Booking",
+                            icon: Icons.apartment,
+                            color: primaryGreen,
+                            onTap: () {
+                              context.push('/booking');
+                            },
+                          ),
+                          // Tombol Dokter
+                          _buildCategoryItem(
+                            title: "Daftar Dokter",
+                            icon: Icons.person_add,
+                            color: primaryGreen,
+                            onTap: () {
+                              context.push('/add-docter');
+                            },
+                          ),
+                          // Tombol RS
+                          _buildCategoryItem(
+                            title: "Daftar RS",
+                            icon: Icons.local_hospital,
+                            color: primaryGreen,
+                            onTap: () {
+                              context.push('/register/hospital');
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -106,7 +131,7 @@ class HomeScreen extends StatelessWidget {
                       _buildHospitalCard(
                           "RS USU",
                           "Jl. Dr. Mansyur, Medan",
-                          "https://upload.wikimedia.org/wikipedia/commons/6/63/RS_USU.jpg", // Ganti dengan aset lokal jika ada
+                          "https://upload.wikimedia.org/wikipedia/commons/6/63/RS_USU.jpg",
                           primaryGreen
                       ),
                       const SizedBox(height: 12),
@@ -133,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                           "dr. Bima Santosa, Sp.A",
                           "Spesialis Anak",
                           "RS Hermina Depok",
-                          "https://i.pravatar.cc/150?img=33", // Foto dokter placeholder
+                          "https://i.pravatar.cc/150?img=33",
                           primaryGreen
                       ),
                       const SizedBox(height: 12),
@@ -144,7 +169,7 @@ class HomeScreen extends StatelessWidget {
                           "https://i.pravatar.cc/150?img=33",
                           primaryGreen
                       ),
-                      const SizedBox(height: 80), // Space extra agar tidak tertutup nav bar
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ),
@@ -156,7 +181,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // WIDGET HELPER: Section Title dengan "Lihat Lagi"
+  // WIDGET HELPER: Section Title
   Widget _buildSectionHeader(String title, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -168,7 +193,6 @@ class HomeScreen extends StatelessWidget {
             title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          // Sesuai desain, tombol lihat lagi ada di sebelah kanan
           Row(
             children: [
               Text(
@@ -189,39 +213,48 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // WIDGET HELPER: Kartu Kategori (Kotak Putih)
-  Widget _buildCategoryItem(String title, IconData icon, Color color) {
-    return Container(
-      width: 100,
-      height: 110,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            spreadRadius: 2,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: color),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: color,
+  // WIDGET HELPER: Kartu Kategori (DIPERBAIKI)
+  // Menggunakan Named Parameter ({}) agar lebih aman dan rapi
+  Widget _buildCategoryItem({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap, // Wajib diisi
+  }) {
+    return GestureDetector(
+      onTap: onTap, // Menjalankan fungsi navigasi
+      child: Container(
+        width: 100,
+        height: 110,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: const Offset(0, 5),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: color),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -243,7 +276,6 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Gambar RS
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
@@ -255,7 +287,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          // Info Teks
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +327,6 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Foto Dokter
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
@@ -308,7 +338,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          // Info Teks
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
