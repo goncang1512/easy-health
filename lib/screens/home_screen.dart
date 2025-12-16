@@ -1,3 +1,4 @@
+import 'package:easyhealth/provider/navigation_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/fetch.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +134,10 @@ class _HomeScreen extends State<HomeScreen> {
                             icon: Icons.apartment,
                             color: primaryGreen,
                             onTap: () {
-                              context.push('/booking');
+                              final shell = context
+                                  .read<NavigationProvider>()
+                                  .shell;
+                              shell?.goBranch(1);
                             },
                           ),
                           // Tombol Dokter
@@ -179,20 +183,29 @@ class _HomeScreen extends State<HomeScreen> {
                     return Column(
                       children: [
                         // 3. RUMAH SAKIT SECTION
-                        _buildSectionHeader("Rumah Sakit", primaryGreen),
+                        _buildSectionHeader("Rumah Sakit", primaryGreen, () {
+                          final shell = context
+                              .read<NavigationProvider>()
+                              .shell;
+                          shell?.goBranch(2);
+                        }),
                         const SizedBox(height: 10),
                         // List Rumah Sakit
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Column(
                             children: hospitals.map((hospital) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _buildHospitalCard(
-                                  hospital['name'],
-                                  hospital['address'],
-                                  hospital['image'],
-                                  primaryGreen,
+                              return GestureDetector(
+                                onTap: () =>
+                                    context.push("/hospital/${hospital['id']}"),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: _buildHospitalCard(
+                                    hospital['name'],
+                                    hospital['address'],
+                                    hospital['image'],
+                                    primaryGreen,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -202,20 +215,29 @@ class _HomeScreen extends State<HomeScreen> {
                         const SizedBox(height: 24),
 
                         // 4. DOKTER SECTION
-                        _buildSectionHeader("Dokter", primaryGreen),
+                        _buildSectionHeader("Dokter", primaryGreen, () {
+                          final shell = context
+                              .read<NavigationProvider>()
+                              .shell;
+                          shell?.goBranch(2);
+                        }),
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Column(
                             children: docters.map((doctor) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _buildDoctorCard(
-                                  doctor['user']['name'],
-                                  doctor['specialits'],
-                                  doctor['hospital']['name'],
-                                  doctor['photoUrl'],
-                                  primaryGreen,
+                              return GestureDetector(
+                                onTap: () =>
+                                    context.push("/docter/${doctor['id']}"),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: _buildDoctorCard(
+                                    doctor['user']['name'],
+                                    doctor['specialits'],
+                                    doctor['hospital']['name'],
+                                    doctor['photoUrl'],
+                                    primaryGreen,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -234,7 +256,7 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   // WIDGET HELPER: Section Title
-  Widget _buildSectionHeader(String title, Color color) {
+  Widget _buildSectionHeader(String title, Color color, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
@@ -245,20 +267,23 @@ class _HomeScreen extends State<HomeScreen> {
             title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Row(
-            children: [
-              Text(
-                "Lihat\nLagi",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
+          GestureDetector(
+            onTap: onTap,
+            child: Row(
+              children: [
+                Text(
+                  "Lihat Lagi",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              Icon(Icons.arrow_forward, color: color, size: 18),
-            ],
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward, color: color, size: 18),
+              ],
+            ),
           ),
         ],
       ),
