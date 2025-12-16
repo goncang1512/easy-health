@@ -70,6 +70,11 @@ jobs:
         run: |
           echo $GOOGLE_SERVICES_JSON_BASE64 | base64 --decode > android/app/google-services.json
 
+      - name: Increase Gradle Heap Size
+        run: |
+          echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" >> android/gradle.properties
+          echo "org.gradle.parallel=false" >> android/gradle.properties
+
       - name: Build Release APK
         run: flutter build apk --release
 
