@@ -1,3 +1,4 @@
+import 'package:easyhealth/utils/fetch.dart';
 import 'package:easyhealth/utils/secure_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,11 @@ class SessionManager extends ChangeNotifier {
 
   Future<void> clearSession() async {
     await PrefsService.deleteToken();
+    await HTTP.delete(
+      "/api/sign/logout",
+      headers: {"Authorization": "Bearer ${session?.session.token}"},
+    );
+
     _session = null;
     notifyListeners();
   }

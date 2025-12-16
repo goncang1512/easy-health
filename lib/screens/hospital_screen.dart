@@ -4,6 +4,7 @@ import 'package:easyhealth/models/hospital_model.dart';
 import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/fetch.dart';
+import 'package:easyhealth/utils/theme.dart';
 import 'package:easyhealth/widgets/detail_hospital/hospital_header.dart';
 import 'package:easyhealth/widgets/detail_hospital/tag_hospital.dart';
 import 'package:easyhealth/widgets/search_screen/docter_list.dart';
@@ -71,7 +72,7 @@ class _HospitalPage extends State<HospitalScreen> {
 
               final Map<String, dynamic> result = await message.createRoom(
                 session.session?.user.id ?? "",
-                admin[0].user.id,
+                widget.hospitalId,
               );
 
               if (result['status']) {
@@ -79,7 +80,7 @@ class _HospitalPage extends State<HospitalScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: ThemeColors.primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(
                 vertical: 14,

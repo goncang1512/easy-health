@@ -1,9 +1,13 @@
+// session_models.dart
+
 class User {
   final String id;
   final String email;
   final String name;
   final String? image;
   final String role;
+  final String? phone; 
+  final String? address; 
 
   User({
     required this.id,
@@ -11,15 +15,19 @@ class User {
     required this.name,
     this.image,
     required this.role,
+    this.phone,
+    this.address,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'],
-      email: map['email'],
-      name: map['name'],
-      image: map['image'],
-      role: map['role'],
+      id: map['id'] as String, 
+      email: map['email'] as String,
+      name: map['name'] as String,
+      image: map['image'] as String?, 
+      role: map['role'] as String,
+      phone: map['phone'] as String?, 
+      address: map['address'] as String?, 
     );
   }
 
@@ -30,7 +38,28 @@ class User {
       'name': name,
       'image': image,
       'role': role,
+      'phone': phone,
+      'address': address,
     };
+  }
+}
+
+extension UserCopy on User {
+  User copyWith({
+    String? phone,
+    String? address,
+    String? image,
+    String? name,
+  }) {
+    return User(
+      id: id,
+      email: email,
+      name: name ?? this.name,
+      role: role,
+      image: image ?? this.image,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
+    );
   }
 }
 
@@ -145,7 +174,7 @@ class UserSession {
   }) {
     return UserSession(
       user: user ?? this.user,
-      session: session ?? this.session, // session/token tetap sama
+      session: session ?? this.session,
       hospital: hospital ?? this.hospital,
       docter: docter ?? this.docter,
     );

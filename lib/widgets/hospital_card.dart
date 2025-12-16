@@ -1,5 +1,6 @@
 import 'package:easyhealth/screens/hospital_screen.dart';
 import 'package:easyhealth/utils/navigation_helper.dart';
+import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -92,9 +93,7 @@ class HospitalCard extends StatelessWidget {
               // Icon Favorite
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.green.withValues(
-                    alpha: 0.1,
-                  ), // background hijau transparan
+                  color: ThemeColors.secondary, // background hijau transparan
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
@@ -102,7 +101,7 @@ class HospitalCard extends StatelessWidget {
                   onPressed: onFavoriteTap,
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.green,
+                    color: isFavorite ? Colors.red : ThemeColors.primary,
                   ),
                 ),
               ),

@@ -129,7 +129,9 @@ class _DocterDashboard extends State<DocterDashboard> {
                         date: item.bookDate,
                         onCancel: () => cancelBooking(
                           item.id,
-                          item.status == "confirm" ? "canceled" : "confirm",
+                          item.status == "confirm" || item.status == "finish"
+                              ? "canceled"
+                              : "confirm",
                         ),
                         onFinish: () => cancelBooking(item.id, "finish"),
                       ),

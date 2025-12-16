@@ -1,9 +1,11 @@
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/booking_model.dart';
-
-// IMPORT CHAT PAGE
-import 'chat/chat_page.dart';
+import 'package:provider/provider.dart';
+import '../provider/message_provider.dart';
+import '../utils/fetch.dart';
 
 class DetailBookingPage extends StatelessWidget {
   final BookingModel booking;
@@ -20,7 +22,6 @@ class DetailBookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeColors.secondary,
       appBar: AppBar(
         backgroundColor: ThemeColors.primary,
         elevation: 0,
@@ -45,7 +46,7 @@ class DetailBookingPage extends StatelessWidget {
                 color: Colors.black12,
                 blurRadius: 4,
                 offset: const Offset(0, 2),
-              )
+              ),
             ],
           ),
           child: Column(
@@ -58,20 +59,27 @@ class DetailBookingPage extends StatelessWidget {
                   Text(
                     "Booking ID : ${booking.bookingId}",
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: ThemeColors.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       booking.status,
-                      style: const TextStyle(color: ThemeColors.secondary, fontSize: 12),
+                      style: const TextStyle(
+                        color: ThemeColors.secondary,
+                        fontSize: 12,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
 
@@ -96,13 +104,15 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorName,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.grey),
-                      ),
+                            fontSize: 12, color: Colors.black),
+                        ),
                     ],
                   ),
                 ],
@@ -110,9 +120,9 @@ class DetailBookingPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              Text(booking.hospital),
-              Text(booking.date),
-              Text(booking.time),
+              Text("Rumah Sakit : ${booking.hospital}"),
+              Text("Tanggal : ${booking.date}"),
+              Text("Jam : ${booking.time}"),
 
               const SizedBox(height: 16),
 
@@ -131,10 +141,11 @@ class DetailBookingPage extends StatelessWidget {
                       child: Text(
                         "Harap datang 15 menit lebih awal dari waktu perjanjian",
                         style: TextStyle(
-                            color: ThemeColors.primary,
-                            fontWeight: FontWeight.w600),
+                          color: ThemeColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -153,40 +164,73 @@ class DetailBookingPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: ThemeColors.primary),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ChatPage(
-                                hospitalName: booking.hospital,
-                                bookingId: booking.bookingId,
-                              )),
+                    backgroundColor: ThemeColors.primary,
+                  ),
+                  onPressed: () async {
+                    final messageProvider = context.read<MessageProvider>();
+                    final senderId = messageProvider.session!.user.id;
+                    final hospitalId = booking.hospitalId;
+                    if (hospitalId == null) return;
+
+                    // 1️⃣ Buat / ambil room RS
+                    final room = await messageProvider.createRoom(
+                      senderId,
+                      hospitalId,
                     );
+                    if (room['status'] == true) {
+                      final provider = context.read<SessionManager>();
+                      final room = await messageProvider.createRoom(provider.session!.user.id, hospitalId);
+                      context.push("/chat-room/${room['roomId']}");
+                    }
                   },
-                  child: const Text("Hubungi Rumah Sakit"),
+
+                  child: const Text("Hubungi Rumah Sakit", style: TextStyle(color: ThemeColors.secondary),),
                 ),
               ),
 
               const SizedBox(height: 10),
-
               /// Cancel button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red)),
-                  onPressed: () {
-                    /// 👇 Hapus data booking
-                    onDelete();
-
-                    /// 👇 Kembali ke halaman sebelumnya
-                    Navigator.pop(context);
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  onPressed: () async {
+                    try {
+                      // 1️⃣ Panggil API cancel booking dengan HTTP.delete
+                      final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
+                      if (result is Map<String, dynamic> && result['status'] == true) {
+                        onDelete();
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Booking berhasil dibatalkan")),
+                        );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text(result['message'] ?? "Gagal membatalkan booking"),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Gagal membatalkan booking: $e")),
+                        );
+                      }
                   },
-                  child: const Text("Canceled"),
+                  child: const Text(
+                    "Canceled",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              )
+              ),
+
             ],
           ),
         ),

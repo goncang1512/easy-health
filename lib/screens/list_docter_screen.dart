@@ -1,5 +1,6 @@
 import 'package:easyhealth/models/docter_model.dart';
 import 'package:easyhealth/provider/docter_provider.dart';
+import 'package:easyhealth/utils/alert.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:easyhealth/widgets/dokter_card.dart';
 import 'package:flutter/material.dart';
@@ -39,13 +40,9 @@ class _ListDocterScreen extends State<ListDocterScreen> {
         await _refreshData(); // panggil fungsi refresh yg kamu sudah buat
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Dokter berhasil di $status")));
+      Alert.successBanner("Dokter berhasil di $status", context);
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      Alert.showBanner("Dokter gagal di $status", context);
     }
   }
 

@@ -27,6 +27,7 @@ class BookingProvider with ChangeNotifier {
   Future<Map<String, Object>> onSubmit(
     String hospitalId,
     String docterId,
+    String userId,
   ) async {
     _isLoading = true;
     notifyListeners();
@@ -41,6 +42,7 @@ class BookingProvider with ChangeNotifier {
           "note": noteController.text,
           "docterId": docterId,
           "hospitalId": hospitalId,
+          "userId": userId,
         },
       );
 
