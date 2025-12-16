@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const EasyHealthApp());
+  runApp(const HomeScreen());
 }
 
-class EasyHealthApp extends StatelessWidget {
-  const EasyHealthApp({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
