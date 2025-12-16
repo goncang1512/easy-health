@@ -63,7 +63,6 @@ class _ProfilePageState extends State<ProfileScreen> {
     });
   }
 
-  
   void _saveProfile() async {
     if (!_isEditing || _isSaving) return;
 
@@ -219,32 +218,6 @@ class _ProfilePageState extends State<ProfileScreen> {
               child: SafeArea(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          const Expanded(
-                            child: Text(
-                              "Profil",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(width: 48),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 10),
                     ClipOval(
                       child: (userImage.isNotEmpty)

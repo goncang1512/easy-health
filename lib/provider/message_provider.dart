@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class MessageProvider with ChangeNotifier {
   UserSession? session;
 
-  MessageProvider({required this.session});
+  MessageProvider({this.session});
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;

@@ -1,3 +1,4 @@
+import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:flutter/material.dart';
 import '../utils/theme.dart';
@@ -93,12 +94,17 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
                     refreshBookings();
                   },
                   onTap: () async {
+                    final datasession = context.read<SessionManager>();
                     final deletedId = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => DetailBookingPage(
-                          booking: bookings[index],
-                          onDelete: () {},
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) =>
+                              MessageProvider(session: datasession.session),
+                          child: DetailBookingPage(
+                            booking: bookings[index],
+                            onDelete: () {},
+                          ),
                         ),
                       ),
                     );

@@ -178,31 +178,6 @@ class _ListDocterScreen extends State<ListDocterScreen> {
                         );
                       }).toList(),
                     ),
-                    // child: ListView.builder(
-                    //   itemCount: docters?.length,
-                    //   itemBuilder: (context, index) {
-                    //     final filtered = docters!
-                    //         .where((d) => d.status == tabs)
-                    //         .toList();
-
-                    //     final doctor = filtered[index];
-
-                    //     return DoctorCard(
-                    //       onBookTap: () => updateDocter(
-                    //         doctor.id,
-                    //         doctor.status == "verified"
-                    //             ? "unverified"
-                    //             : "verified",
-                    //       ),
-                    //       buttonText: doctor.status,
-                    //       showHospital: false,
-                    //       imageUrl: doctor.photoUrl ?? "",
-                    //       name: doctor.name,
-                    //       specialty: doctor.specialits,
-                    //       hospital: doctor.hospital?.name ?? "",
-                    //     );
-                    //   },
-                    // ),
                   ),
                 ],
               ),

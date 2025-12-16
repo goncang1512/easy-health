@@ -1,12 +1,41 @@
+import 'package:easyhealth/provider/session_provider.dart';
+import 'package:easyhealth/utils/fetch.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreen();
+}
+
+class _HomeScreen extends State<HomeScreen> {
+  late Future<Map<String, dynamic>> homeFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    homeFuture = getHomeRecomend();
+  }
+
+  Future<Map<String, dynamic>> getHomeRecomend() async {
+    try {
+      final response = await HTTP.get("/api/home/user");
+      return {
+        "hospitals": response['result']['hospitals'],
+        "docters": response['result']['docters'],
+      };
+    } catch (error) {
+      return {"hospitals": [], "docters": []};
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // Warna hijau utama diambil dari screenshot
     final Color primaryGreen = const Color(0xFF1CB079);
+    final dataSession = context.watch<SessionManager>();
 
     return Scaffold(
       body: Stack(
@@ -18,7 +47,12 @@ class HomeScreen extends StatelessWidget {
               children: [
                 // 1. HEADER SECTION
                 Container(
-                  padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 30),
+                  padding: const EdgeInsets.only(
+                    top: 60,
+                    left: 24,
+                    right: 24,
+                    bottom: 30,
+                  ),
                   decoration: BoxDecoration(
                     color: primaryGreen,
                     borderRadius: const BorderRadius.only(
@@ -35,8 +69,11 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2),
-                          image: const DecorationImage(
-                            image: NetworkImage('https://i.pravatar.cc/150?img=11'), // Placeholder user
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              dataSession.session?.user.image ??
+                                  'https://i.pravatar.cc/150?img=11',
+                            ), // Placeholder user
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -45,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                       // Teks Salam
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Bagaimana Kabarmu?",
                             style: TextStyle(
@@ -56,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            "Bung Karno",
+                            dataSession.session?.user.name ?? "",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -78,15 +115,30 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       const Text(
                         "Kategori",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildCategoryItem("Booking", Icons.apartment, primaryGreen),
-                          _buildCategoryItem("Daftar Dokter", Icons.person_search, primaryGreen),
-                          _buildCategoryItem("Daftar RS", Icons.local_hospital, primaryGreen),
+                          _buildCategoryItem(
+                            "Booking",
+                            Icons.apartment,
+                            primaryGreen,
+                          ),
+                          _buildCategoryItem(
+                            "Daftar Dokter",
+                            Icons.person_search,
+                            primaryGreen,
+                          ),
+                          _buildCategoryItem(
+                            "Daftar RS",
+                            Icons.local_hospital,
+                            primaryGreen,
+                          ),
                         ],
                       ),
                     ],
@@ -95,58 +147,68 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // 3. RUMAH SAKIT SECTION
-                _buildSectionHeader("Rumah Sakit", primaryGreen),
-                const SizedBox(height: 10),
-                // List Rumah Sakit
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      _buildHospitalCard(
-                          "RS USU",
-                          "Jl. Dr. Mansyur, Medan",
-                          "https://upload.wikimedia.org/wikipedia/commons/6/63/RS_USU.jpg", // Ganti dengan aset lokal jika ada
-                          primaryGreen
-                      ),
-                      const SizedBox(height: 12),
-                      _buildHospitalCard(
-                          "RS USU",
-                          "Jl. Dr. Mansyur, Medan",
-                          "https://upload.wikimedia.org/wikipedia/commons/6/63/RS_USU.jpg",
-                          primaryGreen
-                      ),
-                    ],
-                  ),
-                ),
+                FutureBuilder<Map<String, dynamic>>(
+                  future: homeFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                const SizedBox(height: 24),
+                    if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    }
 
-                // 4. DOKTER SECTION
-                _buildSectionHeader("Dokter", primaryGreen),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      _buildDoctorCard(
-                          "dr. Bima Santosa, Sp.A",
-                          "Spesialis Anak",
-                          "RS Hermina Depok",
-                          "https://i.pravatar.cc/150?img=33", // Foto dokter placeholder
-                          primaryGreen
-                      ),
-                      const SizedBox(height: 12),
-                      _buildDoctorCard(
-                          "dr. Bima Santosa, Sp.A",
-                          "Spesialis Anak",
-                          "RS Hermina Depok",
-                          "https://i.pravatar.cc/150?img=33",
-                          primaryGreen
-                      ),
-                      const SizedBox(height: 80), // Space extra agar tidak tertutup nav bar
-                    ],
-                  ),
+                    final docters = snapshot.data!['docters'] as List;
+                    final hospitals = snapshot.data!['hospitals'] as List;
+
+                    return Column(
+                      children: [
+                        // 3. RUMAH SAKIT SECTION
+                        _buildSectionHeader("Rumah Sakit", primaryGreen),
+                        const SizedBox(height: 10),
+                        // List Rumah Sakit
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            children: hospitals.map((hospital) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildHospitalCard(
+                                  hospital['name'],
+                                  hospital['address'],
+                                  hospital['image'],
+                                  primaryGreen,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // 4. DOKTER SECTION
+                        _buildSectionHeader("Dokter", primaryGreen),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            children: docters.map((doctor) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildDoctorCard(
+                                  doctor['user']['name'],
+                                  doctor['specialits'],
+                                  doctor['hospital']['name'],
+                                  doctor['photoUrl'],
+                                  primaryGreen,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -183,7 +245,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(width: 4),
               Icon(Icons.arrow_forward, color: color, size: 18),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -227,7 +289,12 @@ class HomeScreen extends StatelessWidget {
   }
 
   // WIDGET HELPER: Kartu Rumah Sakit
-  Widget _buildHospitalCard(String name, String address, String imageUrl, Color color) {
+  Widget _buildHospitalCard(
+    String name,
+    String address,
+    String imageUrl,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -251,7 +318,8 @@ class HomeScreen extends StatelessWidget {
               width: 80,
               height: 60,
               fit: BoxFit.cover,
-              errorBuilder: (ctx, _, __) => Container(width: 80, height: 60, color: Colors.grey[200]),
+              errorBuilder: (ctx, _, __) =>
+                  Container(width: 80, height: 60, color: Colors.grey[200]),
             ),
           ),
           const SizedBox(width: 16),
@@ -262,7 +330,10 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -280,7 +351,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   // WIDGET HELPER: Kartu Dokter
-  Widget _buildDoctorCard(String name, String specialist, String hospital, String imageUrl, Color color) {
+  Widget _buildDoctorCard(
+    String name,
+    String specialist,
+    String hospital,
+    String imageUrl,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -304,7 +381,8 @@ class HomeScreen extends StatelessWidget {
               width: 70,
               height: 70,
               fit: BoxFit.cover,
-              errorBuilder: (ctx, _, __) => Container(width: 70, height: 70, color: Colors.grey[200]),
+              errorBuilder: (ctx, _, __) =>
+                  Container(width: 70, height: 70, color: Colors.grey[200]),
             ),
           ),
           const SizedBox(width: 16),
@@ -315,12 +393,19 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   specialist,
-                  style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Row(

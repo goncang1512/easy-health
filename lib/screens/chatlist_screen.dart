@@ -15,7 +15,7 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  final TextEditingController keyword = TextEditingController();
+  String searchKeyword = "";
   final firebaseService = FirestoreService();
 
   // cache user biar tidak fetch terus menerus
@@ -49,8 +49,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
         child: Column(
           children: [
             InputSearchComponent(
-              controller: keyword,
-              onSubmit: (_) {},
+              onSubmit: (value) {
+                setState(() {
+                  searchKeyword = value.trim().toLowerCase();
+                });
+              },
               placeholder: "Cari pesan",
             ),
 
@@ -80,8 +83,28 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     fetchUsersOnce(rooms, chat);
                   });
 
+                  final filteredRooms = rooms.where((room) {
+                    final userAId = room["userAId"];
+                    final user = userCache[userAId];
+
+                    // user belum siap → jangan tampilkan
+                    if (user == null) return false;
+
+                    // belum search → tampilkan semua
+                    if (searchKeyword.isEmpty) return true;
+
+                    return user.name.toLowerCase().contains(searchKeyword);
+                  }).toList();
+
+                  if (filteredRooms.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text("Chat tidak ditemukan"),
+                    );
+                  }
+
                   return Column(
-                    children: rooms.map((room) {
+                    children: filteredRooms.map((room) {
                       final roomId = room["id"];
                       final userAId = room["userAId"];
                       final user = userCache[userAId];
