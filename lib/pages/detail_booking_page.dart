@@ -1,6 +1,7 @@
-import 'package:easyhealth/screens/chat_screen.dart';
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/booking_model.dart';
 import 'package:provider/provider.dart';
 import '../provider/message_provider.dart';
@@ -21,7 +22,6 @@ class DetailBookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeColors.secondary,
       appBar: AppBar(
         backgroundColor: ThemeColors.primary,
         elevation: 0,
@@ -111,10 +111,8 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                            fontSize: 12, color: Colors.black),
                         ),
-                      ),
                     ],
                   ),
                 ],
@@ -122,9 +120,9 @@ class DetailBookingPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              Text(booking.hospital),
-              Text(booking.date),
-              Text(booking.time),
+              Text("Rumah Sakit : ${booking.hospital}"),
+              Text("Tanggal : ${booking.date}"),
+              Text("Jam : ${booking.time}"),
 
               const SizedBox(height: 16),
 
@@ -180,27 +178,17 @@ class DetailBookingPage extends StatelessWidget {
                       hospitalId,
                     );
                     if (room['status'] == true) {
-                      final roomId = room['roomId'];
-                      // 2️⃣ Ambil chat RS tersebut
-                      await messageProvider.fetchChat(roomId);
-                      // 3️⃣ Masuk ke ChatScreen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ChatScreenMessage(
-                            roomId: roomId, // backend roomId
-                          ),
-                        ),
-                      );
+                      final provider = context.read<SessionManager>();
+                      final room = await messageProvider.createRoom(provider.session!.user.id, hospitalId);
+                      context.push("/chat-room/${room['roomId']}");
                     }
                   },
 
-                  child: const Text("Hubungi Rumah Sakit"),
+                  child: const Text("Hubungi Rumah Sakit", style: TextStyle(color: ThemeColors.secondary),),
                 ),
               ),
 
               const SizedBox(height: 10),
-
               /// Cancel button
               SizedBox(
                 width: double.infinity,
@@ -208,41 +196,41 @@ class DetailBookingPage extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    ),
                   ),
                   onPressed: () async {
                     try {
-                      // Panggil API cancel booking
-                      final result = await HTTP.post(
-                        "/api/booking/cancel/${booking.bookingId}",
-                      );
-
-                      // Pastikan result punya key 'status'
-                      if (result is Map<String, dynamic> &&
-                          result['status'] == true) {
-                        // Hanya kembali dan refresh list
-                        onDelete(); // callback ke ListBookingScreen
+                      // 1️⃣ Panggil API cancel booking dengan HTTP.delete
+                      final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
+                      if (result is Map<String, dynamic> && result['status'] == true) {
+                        onDelete();
                         Navigator.pop(context);
-                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              result['message'] ?? "Gagal membatalkan booking",
+                          const SnackBar(content: Text("Booking berhasil dibatalkan")),
+                        );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text(result['message'] ?? "Gagal membatalkan booking"),
                             ),
-                          ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Gagal membatalkan booking: $e")),
                         );
                       }
-                    } catch (e) {
-                      // Tangani error network / json decode
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Gagal membatalkan booking: $e"),
-                        ),
-                      );
-                    }
                   },
-                  child: const Text("Canceled"),
+                  child: const Text(
+                    "Canceled",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
+
             ],
           ),
         ),
