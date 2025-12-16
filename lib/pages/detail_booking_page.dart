@@ -1,4 +1,3 @@
-import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -111,8 +110,10 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.black),
+                          fontSize: 12,
+                          color: Colors.black,
                         ),
+                      ),
                     ],
                   ),
                 ],
@@ -177,18 +178,21 @@ class DetailBookingPage extends StatelessWidget {
                       senderId,
                       hospitalId,
                     );
+
                     if (room['status'] == true) {
-                      final provider = context.read<SessionManager>();
-                      final room = await messageProvider.createRoom(provider.session!.user.id, hospitalId);
                       context.push("/chat-room/${room['roomId']}");
                     }
                   },
 
-                  child: const Text("Hubungi Rumah Sakit", style: TextStyle(color: ThemeColors.secondary),),
+                  child: const Text(
+                    "Hubungi Rumah Sakit",
+                    style: TextStyle(color: ThemeColors.secondary),
+                  ),
                 ),
               ),
 
               const SizedBox(height: 10),
+
               /// Cancel button
               SizedBox(
                 width: double.infinity,
@@ -197,32 +201,40 @@ class DetailBookingPage extends StatelessWidget {
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
                     shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                   onPressed: () async {
                     try {
                       // 1️⃣ Panggil API cancel booking dengan HTTP.delete
-                      final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
-                      if (result is Map<String, dynamic> && result['status'] == true) {
+                      final result = await HTTP.delete(
+                        "/api/booking/cancel/${booking.id}",
+                      );
+                      if (result is Map<String, dynamic> &&
+                          result['status'] == true) {
                         onDelete();
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Booking berhasil dibatalkan")),
+                          const SnackBar(
+                            content: Text("Booking berhasil dibatalkan"),
+                          ),
                         );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text(result['message'] ?? "Gagal membatalkan booking"),
-                            ),
-                          );
-                        }
-                      } catch (e) {
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Gagal membatalkan booking: $e")),
+                          SnackBar(
+                            content: Text(
+                              result['message'] ?? "Gagal membatalkan booking",
+                            ),
+                          ),
                         );
                       }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Gagal membatalkan booking: $e"),
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     "Canceled",
@@ -230,7 +242,6 @@ class DetailBookingPage extends StatelessWidget {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
