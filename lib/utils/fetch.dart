@@ -5,7 +5,6 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 
 class HTTP {
   static const String baseUrl = "https://easyhealt-backend.vercel.app";
-  // static const String baseUrl = "http://10.0.2.2:3000";
   static const Map<String, String> defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

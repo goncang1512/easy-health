@@ -1,6 +1,8 @@
+import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/screens/chat_screen.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/booking_model.dart';
 import 'package:provider/provider.dart';
 import '../provider/message_provider.dart';
@@ -22,7 +24,6 @@ class DetailBookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeColors.secondary,
       appBar: AppBar(
         backgroundColor: ThemeColors.primary,
         elevation: 0,
@@ -103,7 +104,7 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.grey),
+                            fontSize: 12, color: Colors.black),
                       ),
                     ],
                   ),
@@ -112,9 +113,9 @@ class DetailBookingPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              Text(booking.hospital),
-              Text(booking.date),
-              Text(booking.time),
+              Text("Rumah Sakit : ${booking.hospital}"),
+              Text("Tanggal : ${booking.date}"),
+              Text("Jam : ${booking.time}"),
 
               const SizedBox(height: 16),
 
@@ -165,29 +166,21 @@ class DetailBookingPage extends StatelessWidget {
                     // 1️⃣ Buat / ambil room RS
                     final room = await messageProvider.createRoom(senderId, hospitalId);
                     if (room['status'] == true) {
-                      final roomId = room['roomId'];
-                      // 2️⃣ Ambil chat RS tersebut
-                      await messageProvider.fetchChat(roomId);
+                      final provider = context.read<SessionManager>();
+
                       
-                      // 3️⃣ Masuk ke ChatScreen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ChatScreenMessage(
-                            roomId: roomId, // backend roomId
-                          ),
-                        ),
-                      );
+                      // 2️⃣ Ambil chat RS tersebut
+                      final room = await messageProvider.createRoom(provider.session!.user.id, hospitalId);
+                      context.push("/chat-room/${room['roomId']}");
                     }
 },
 
-                  child: const Text("Hubungi Rumah Sakit"),
+                  child: const Text("Hubungi Rumah Sakit", style: TextStyle(color: ThemeColors.secondary),),
                 ),
               ),
 
               const SizedBox(height: 10),
-
-/// Cancel button
+              /// Cancel button
 SizedBox(
   width: double.infinity,
   child: OutlinedButton(
@@ -195,7 +188,7 @@ SizedBox(
       foregroundColor: Colors.red,
       side: const BorderSide(color: Colors.red),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(50),
       ),
     ),
     onPressed: () async {
