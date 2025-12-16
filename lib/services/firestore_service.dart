@@ -3,11 +3,7 @@ import 'package:easyhealth/models/message_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // ignore: unused_element
-  CollectionReference _messagesCollection() {
-    return _firestore.collection("message");
-  }
+  FirebaseFirestore get firestore => _firestore;
 
   Stream<List<MessageModel>> getMessageRoom(String roomId) {
     return _firestore

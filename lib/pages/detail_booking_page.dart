@@ -1,5 +1,4 @@
 import 'package:easyhealth/provider/session_provider.dart';
-import 'package:easyhealth/screens/chat_screen.dart';
 import 'package:easyhealth/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +6,6 @@ import '../models/booking_model.dart';
 import 'package:provider/provider.dart';
 import '../provider/message_provider.dart';
 import '../utils/fetch.dart';
-
 
 class DetailBookingPage extends StatelessWidget {
   final BookingModel booking;
@@ -48,7 +46,7 @@ class DetailBookingPage extends StatelessWidget {
                 color: Colors.black12,
                 blurRadius: 4,
                 offset: const Offset(0, 2),
-              )
+              ),
             ],
           ),
           child: Column(
@@ -61,20 +59,27 @@ class DetailBookingPage extends StatelessWidget {
                   Text(
                     "Booking ID : ${booking.bookingId}",
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: ThemeColors.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       booking.status,
-                      style: const TextStyle(color: ThemeColors.secondary, fontSize: 12),
+                      style: const TextStyle(
+                        color: ThemeColors.secondary,
+                        fontSize: 12,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
 
@@ -99,13 +104,15 @@ class DetailBookingPage extends StatelessWidget {
                       Text(
                         booking.doctorName,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         booking.doctorSpecialist,
                         style: const TextStyle(
                             fontSize: 12, color: Colors.black),
-                      ),
+                        ),
                     ],
                   ),
                 ],
@@ -134,10 +141,11 @@ class DetailBookingPage extends StatelessWidget {
                       child: Text(
                         "Harap datang 15 menit lebih awal dari waktu perjanjian",
                         style: TextStyle(
-                            color: ThemeColors.primary,
-                            fontWeight: FontWeight.w600),
+                          color: ThemeColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -156,24 +164,25 @@ class DetailBookingPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: ThemeColors.primary),
+                    backgroundColor: ThemeColors.primary,
+                  ),
                   onPressed: () async {
                     final messageProvider = context.read<MessageProvider>();
                     final senderId = messageProvider.session!.user.id;
                     final hospitalId = booking.hospitalId;
                     if (hospitalId == null) return;
-                    
+
                     // 1️⃣ Buat / ambil room RS
-                    final room = await messageProvider.createRoom(senderId, hospitalId);
+                    final room = await messageProvider.createRoom(
+                      senderId,
+                      hospitalId,
+                    );
                     if (room['status'] == true) {
                       final provider = context.read<SessionManager>();
-
-                      
-                      // 2️⃣ Ambil chat RS tersebut
                       final room = await messageProvider.createRoom(provider.session!.user.id, hospitalId);
                       context.push("/chat-room/${room['roomId']}");
                     }
-},
+                  },
 
                   child: const Text("Hubungi Rumah Sakit", style: TextStyle(color: ThemeColors.secondary),),
                 ),
@@ -181,55 +190,46 @@ class DetailBookingPage extends StatelessWidget {
 
               const SizedBox(height: 10),
               /// Cancel button
-SizedBox(
-  width: double.infinity,
-  child: OutlinedButton(
-    style: OutlinedButton.styleFrom(
-      foregroundColor: Colors.red,
-      side: const BorderSide(color: Colors.red),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(50),
-      ),
-    ),
-    onPressed: () async {
-      try {
-        // 1️⃣ Panggil API cancel booking dengan HTTP.delete
-        final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
-
-        // 2️⃣ Cek apakah response sukses
-        if (result is Map<String, dynamic> && result['status'] == true) {
-          // Callback untuk update list booking
-          onDelete();
-
-          // Tutup detail page
-          Navigator.pop(context);
-
-          // Optional: tampilkan pesan sukses
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Booking berhasil dibatalkan")),
-          );
-        } else {
-          // Jika gagal, tampilkan pesan error dari backend
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text(result['message'] ?? "Gagal membatalkan booking")),
-          );
-        }
-      } catch (e) {
-        // Tangani error network / json decode
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal membatalkan booking: $e")),
-        );
-      }
-    },
-    child: const Text(
-      "Canceled",
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    ),
-  ),
-),
-
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  onPressed: () async {
+                    try {
+                      // 1️⃣ Panggil API cancel booking dengan HTTP.delete
+                      final result = await HTTP.delete("/api/booking/cancel/${booking.id}",);
+                      if (result is Map<String, dynamic> && result['status'] == true) {
+                        onDelete();
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Booking berhasil dibatalkan")),
+                        );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text(result['message'] ?? "Gagal membatalkan booking"),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Gagal membatalkan booking: $e")),
+                        );
+                      }
+                  },
+                  child: const Text(
+                    "Canceled",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
 
             ],
           ),

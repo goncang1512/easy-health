@@ -1,5 +1,5 @@
-import 'package:easyhealth/provider/message_provider.dart';
 import 'package:easyhealth/provider/navigation_provider.dart';
+import 'package:easyhealth/provider/notif_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/config/global_key.dart';
 import 'package:easyhealth/utils/get_session.dart';
@@ -8,9 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'config/routes.dart';
 
-// IMPORT CHAT PROVIDER BARU
-import 'package:easyhealth/provider/chat_provider.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -18,19 +15,16 @@ Future<void> main() async {
   final sessionManager = SessionManager();
   await sessionManager.loadSession();
 
+  final notifManager = NotifProvider();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<SessionManager>.value(value: sessionManager),
-        ChangeNotifierProvider<MessageProvider>(
-          create: (_) => MessageProvider(session: sessionManager.session),
-        ),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-
-        // 👉 DAFTARKAN CHAT PROVIDER
-        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider<NotifProvider>.value(value: notifManager),
       ],
-      child: const MyApp(),
+      child: MyApp(), // atau langsung BranchApp()
     ),
   );
 }
@@ -66,6 +60,7 @@ class _MyApp extends State<MyApp> with WidgetsBindingObserver {
     final userId = data.session?.user.id;
 
     if (userId != null) {
+      context.read<NotifProvider>().getMyNotification(userId);
       _updateUserStatus(userId, "online");
     }
   }

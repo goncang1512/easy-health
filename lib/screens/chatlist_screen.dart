@@ -23,19 +23,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
   bool isFetchingUsers = false;
 
   Future<void> fetchUsersOnce(List<dynamic> rooms, ChatProvider chat) async {
-    if (isFetchingUsers) return;
-    isFetchingUsers = true;
+    final ids = rooms.map((e) => e["userAId"]).toSet();
 
-    final ids = rooms.map((e) => e["userAId"]).toSet().toList();
+    // ambil ID yang BELUM ada di cache
+    final missingIds = ids.where((id) => !userCache.containsKey(id)).toList();
 
-    for (final id in ids) {
-      if (!userCache.containsKey(id)) {
-        final user = await chat.getUser(id);
-        userCache[id] = user;
-      }
+    if (missingIds.isEmpty) return; // ⛔ STOP → tidak setState
+
+    for (final id in missingIds) {
+      final user = await chat.getUser(id);
+      userCache[id] = user;
     }
 
-    isFetchingUsers = false;
     if (mounted) setState(() {});
   }
 
@@ -64,7 +63,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const LinearProgressIndicator();
                   }
 
                   final rooms = snapshot.data!;
@@ -88,19 +87,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       final user = userCache[userAId];
 
                       if (user == null) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 16,
-                          ),
-                          child: const Row(
-                            children: [
-                              CircleAvatar(radius: 20),
-                              SizedBox(width: 12),
-                              Expanded(child: LinearProgressIndicator()),
-                            ],
-                          ),
-                        );
+                        return const LinearProgressIndicator();
+                      }
+
+                      final latestMessage = room['latestMessage'];
+
+                      final hasMessage =
+                          latestMessage != null &&
+                          latestMessage is String &&
+                          latestMessage.trim().isNotEmpty;
+
+                      if (!hasMessage) {
+                        return const SizedBox.shrink(); // kosong tapi aman
                       }
 
                       return ChatItem(

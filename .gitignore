@@ -46,3 +46,6 @@ app.*.map.json
 
 .vscode/
 .VSCodeCounter/
+
+google-services-base64.txt
+keystore-base64.txt

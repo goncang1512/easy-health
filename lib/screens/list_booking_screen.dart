@@ -25,21 +25,23 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
 
   Future<List<BookingModel>> fetchBookingFromApi() async {
     final session = context.read<SessionManager>();
-    final response = await HTTP.get("/api/booking/list/${session.session?.user.id}");
-    
+    final response = await HTTP.get(
+      "/api/booking/list/${session.session?.user.id}",
+    );
+
     if (response['statusCode'] == 200) {
       List<dynamic> data = response['result'];
       // Filter booking yang statusnya bukan "canceled"
-      List<BookingModel> bookings = data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>))
-      .where((b) => b.status.toLowerCase() != 'canceled') // ✅ filter
-      .toList();
-      
-      return bookings;
-      } else {
-        return [];
-        }
-  }
+      List<BookingModel> bookings = data
+          .map((json) => BookingModel.fromJson(json as Map<String, dynamic>))
+          .where((b) => b.status.toLowerCase() != 'canceled') // ✅ filter
+          .toList();
 
+      return bookings;
+    } else {
+      return [];
+    }
+  }
 
   void deleteBooking(List<BookingModel> bookings, String id) {
     setState(() {
@@ -75,10 +77,7 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
 
           if (bookings.isEmpty) {
             return const Center(
-              child: Text(
-                "Tidak ada booking",
-                style: TextStyle(fontSize: 16),
-              ),
+              child: Text("Tidak ada booking", style: TextStyle(fontSize: 16)),
             );
           }
 
@@ -90,10 +89,7 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
                 return BookingCard(
                   booking: bookings[index],
                   onDelete: () {
-                    deleteBooking(
-                      bookings,
-                      bookings[index].id, 
-                    );
+                    deleteBooking(bookings, bookings[index].id);
                     refreshBookings();
                   },
                   onTap: () async {
@@ -105,16 +101,13 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
                           onDelete: () {},
                         ),
                       ),
-                  );
+                    );
                     if (deletedId != null && deletedId is String) {
                       setState(() {
-                        bookings.removeWhere(
-                          (b) => b.id == deletedId, 
-                        );
+                        bookings.removeWhere((b) => b.id == deletedId);
                       });
                     }
                   },
-
                 );
               },
             ),

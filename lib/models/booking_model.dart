@@ -1,5 +1,3 @@
-import 'package:easyhealth/models/session_models.dart';
-
 class BookingModel {
   final String id;
   final String bookingId;
