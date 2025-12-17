@@ -1,6 +1,7 @@
 import 'package:easyhealth/provider/hospital_provider.dart';
 import 'package:easyhealth/provider/session_provider.dart';
 import 'package:easyhealth/utils/alert.dart';
+import 'package:easyhealth/utils/theme.dart';
 import 'package:easyhealth/widgets/input_field.dart';
 import 'package:easyhealth/widgets/register_hospital/upload_image.dart';
 import 'package:flutter/material.dart';
@@ -104,11 +105,11 @@ class _FormRegisterHospital extends State<FormRegisterHospital> {
                         return;
                       }
 
-                      await context.read<SessionManager>().refreshSession();
+                      await context.read<SessionManager>().loadSession();
                       context.go("/home");
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: ThemeColors.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   vertical: 14,

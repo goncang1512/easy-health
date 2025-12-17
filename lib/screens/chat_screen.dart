@@ -16,6 +16,14 @@ class ChatScreenMessage extends StatefulWidget {
 
 class _ChatScreen extends State<ChatScreenMessage> {
   final TextEditingController message = TextEditingController();
+  late Future<dynamic> getNameHospital;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = context.read<MessageProvider>();
+    getNameHospital = provider.getHospitalRoomChatName(widget.roomId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +41,10 @@ class _ChatScreen extends State<ChatScreenMessage> {
               )
             : null,
         title: FutureBuilder(
-          future: provider.getHospitalRoomChatName(widget.roomId),
+          future: getNameHospital,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text("Belum ada pesan"));
+              return const Center(child: Text("Chat Hospital"));
             }
 
             final rs = snapshot.data;

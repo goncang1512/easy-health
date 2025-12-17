@@ -68,55 +68,100 @@ class _ListBookingScreenState extends State<ListBookingScreen> {
       body: FutureBuilder<List<BookingModel>>(
         future: bookingsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          }
-
-          final bookings = snapshot.data ?? [];
-
-          if (bookings.isEmpty) {
-            return const Center(
-              child: Text("Tidak ada booking", style: TextStyle(fontSize: 16)),
-            );
-          }
-
           return RefreshIndicator(
             onRefresh: refreshBookings,
-            child: ListView.builder(
-              itemCount: bookings.length,
-              itemBuilder: (context, index) {
-                return BookingCard(
-                  booking: bookings[index],
-                  onDelete: () {
-                    deleteBooking(bookings, bookings[index].id);
-                    refreshBookings();
-                  },
-                  onTap: () async {
-                    final datasession = context.read<SessionManager>();
-                    final deletedId = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                          create: (_) =>
-                              MessageProvider(session: datasession.session),
-                          child: DetailBookingPage(
-                            booking: bookings[index],
-                            onDelete: () {},
+            child: () {
+              // ================= LOADING =================
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return ListView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(height: 300),
+                    Center(child: CircularProgressIndicator()),
+                  ],
+                );
+              }
+
+              // ================= ERROR =================
+              if (snapshot.hasError) {
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    const SizedBox(height: 300),
+                    Center(
+                      child: Text(
+                        "Terjadi kesalahan\nTarik ke bawah untuk refresh",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // ================= DATA =================
+              final bookings = List<BookingModel>.from(snapshot.data ?? []);
+
+              // ================= EMPTY =================
+              if (bookings.isEmpty) {
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(height: 300),
+                    Center(
+                      child: Text(
+                        "Tidak ada booking\nTarik ke bawah untuk refresh",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // ================= LIST =================
+              return ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: bookings.length,
+                itemBuilder: (context, index) {
+                  final booking = bookings[index];
+
+                  return BookingCard(
+                    booking: booking,
+                    onDelete: () {
+                      deleteBooking(bookings, bookings[index].id);
+                      refreshBookings();
+                    },
+                    // ---------- DETAIL ----------
+                    onTap: () async {
+                      final sessionManager = context.read<SessionManager>();
+
+                      final deletedId = await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangeNotifierProvider(
+                            create: (_) => MessageProvider(
+                              session: sessionManager.session,
+                            ),
+                            child: DetailBookingPage(
+                              booking: booking,
+                              onDelete: () {},
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                    if (deletedId != null && deletedId is String) {
-                      setState(() {
-                        bookings.removeWhere((b) => b.id == deletedId);
-                      });
-                    }
-                  },
-                );
-              },
-            ),
+                      );
+
+                      if (!mounted) return;
+
+                      if (deletedId != null) {
+                        setState(() {
+                          bookings.removeWhere((b) => b.id == deletedId);
+                        });
+                      }
+                    },
+                  );
+                },
+              );
+            }(),
           );
         },
       ),

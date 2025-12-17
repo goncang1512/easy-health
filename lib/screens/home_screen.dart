@@ -33,224 +33,237 @@ class _HomeScreen extends State<HomeScreen> {
     }
   }
 
+  Future<void> refreshHome() async {
+    setState(() {
+      homeFuture = getHomeRecomend();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color primaryGreen = const Color(0xFF1CB079);
     final dataSession = context.watch<SessionManager>();
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Konten Utama
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              bottom: 30,
-            ), // Tambahan padding bawah agar aman
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 1. HEADER SECTION
-                Container(
-                  padding: const EdgeInsets.only(
-                    top: 60,
-                    left: 24,
-                    right: 24,
-                    bottom: 30,
+      body: RefreshIndicator(
+        onRefresh: refreshHome,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ================= HEADER =================
+              Container(
+                padding: const EdgeInsets.only(
+                  top: 60,
+                  left: 24,
+                  right: 24,
+                  bottom: 30,
+                ),
+                decoration: BoxDecoration(
+                  color: primaryGreen,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
                   ),
-                  decoration: BoxDecoration(
-                    color: primaryGreen,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
-                      bottomRight: Radius.circular(24),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            dataSession.session?.user.image ??
+                                'https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      // Avatar
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              dataSession.session?.user.image ??
-                                  'https://i.pravatar.cc/150?img=11',
-                            ), // Placeholder user
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Teks Salam
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Bagaimana Kabarmu?",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            dataSession.session?.user.name ?? "",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // 2. KATEGORI SECTION (SUDAH DIPERBAIKI)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Kategori",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Tombol Booking
-                          _buildCategoryItem(
-                            title: "Booking",
-                            icon: Icons.apartment,
-                            color: primaryGreen,
-                            onTap: () {
-                              final shell = context
-                                  .read<NavigationProvider>()
-                                  .shell;
-                              shell?.goBranch(1);
-                            },
-                          ),
-                          // Tombol Dokter
-                          _buildCategoryItem(
-                            title: "Daftar Dokter",
-                            icon: Icons.person_add,
-                            color: primaryGreen,
-                            onTap: () {
-                              context.push('/add-docter');
-                            },
-                          ),
-                          // Tombol RS
-                          _buildCategoryItem(
-                            title: "Daftar RS",
-                            icon: Icons.local_hospital,
-                            color: primaryGreen,
-                            onTap: () {
-                              context.push('/register/hospital');
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                FutureBuilder<Map<String, dynamic>>(
-                  future: homeFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(child: Text("Error: ${snapshot.error}"));
-                    }
-
-                    final docters = snapshot.data!['docters'] as List;
-                    final hospitals = snapshot.data!['hospitals'] as List;
-
-                    return Column(
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 3. RUMAH SAKIT SECTION
-                        _buildSectionHeader("Rumah Sakit", primaryGreen, () {
-                          final shell = context
-                              .read<NavigationProvider>()
-                              .shell;
-                          shell?.goBranch(2);
-                        }),
-                        const SizedBox(height: 10),
-                        // List Rumah Sakit
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Column(
-                            children: hospitals.map((hospital) {
-                              return GestureDetector(
-                                onTap: () =>
-                                    context.push("/hospital/${hospital['id']}"),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: _buildHospitalCard(
-                                    hospital['name'],
-                                    hospital['address'],
-                                    hospital['image'],
-                                    primaryGreen,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                        const Text(
+                          "Bagaimana Kabarmu?",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-
-                        const SizedBox(height: 24),
-
-                        // 4. DOKTER SECTION
-                        _buildSectionHeader("Dokter", primaryGreen, () {
-                          final shell = context
-                              .read<NavigationProvider>()
-                              .shell;
-                          shell?.goBranch(2);
-                        }),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Column(
-                            children: docters.map((doctor) {
-                              return GestureDetector(
-                                onTap: () =>
-                                    context.push("/docter/${doctor['id']}"),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: _buildDoctorCard(
-                                    doctor['user']['name'],
-                                    doctor['specialits'],
-                                    doctor['hospital']['name'],
-                                    doctor['photoUrl'],
-                                    primaryGreen,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                        const SizedBox(height: 4),
+                        Text(
+                          dataSession.session?.user.name ?? "",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
                           ),
                         ),
                       ],
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ================= KATEGORI =================
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Kategori",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildCategoryItem(
+                          title: "Booking",
+                          icon: Icons.apartment,
+                          color: primaryGreen,
+                          onTap: () {
+                            context.read<NavigationProvider>().shell?.goBranch(
+                              1,
+                            );
+                          },
+                        ),
+                        _buildCategoryItem(
+                          title: "Daftar Dokter",
+                          icon: Icons.person_add,
+                          color: primaryGreen,
+                          onTap: () => context.push('/add-docter'),
+                        ),
+                        _buildCategoryItem(
+                          title: "Daftar RS",
+                          icon: Icons.local_hospital,
+                          color: primaryGreen,
+                          onTap: () => context.push('/register/hospital'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ================= DATA HOME =================
+              FutureBuilder<Map<String, dynamic>>(
+                future: homeFuture,
+                builder: (context, snapshot) {
+                  // -------- LOADING --------
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 60),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  // -------- ERROR --------
+                  if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 60),
+                      child: Center(
+                        child: Text(
+                          "Gagal memuat data\nTarik ke bawah untuk refresh",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+
+                  final docters = snapshot.data?['docters'] as List? ?? [];
+                  final hospitals = snapshot.data?['hospitals'] as List? ?? [];
+
+                  // -------- EMPTY --------
+                  if (docters.isEmpty && hospitals.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 60),
+                      child: Center(
+                        child: Text(
+                          "Data belum tersedia\nTarik ke bawah untuk refresh",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      // ===== RUMAH SAKIT =====
+                      _buildSectionHeader("Rumah Sakit", primaryGreen, () {
+                        context.read<NavigationProvider>().shell?.goBranch(2);
+                      }),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          children: hospitals.map((hospital) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  context.push("/hospital/${hospital['id']}"),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildHospitalCard(
+                                  hospital['name'],
+                                  hospital['address'],
+                                  hospital['image'],
+                                  primaryGreen,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // ===== DOKTER =====
+                      _buildSectionHeader("Dokter", primaryGreen, () {
+                        context.read<NavigationProvider>().shell?.goBranch(2);
+                      }),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          children: docters.map((doctor) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  context.push("/docter/${doctor['id']}"),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildDoctorCard(
+                                  doctor['user']['name'],
+                                  doctor['specialits'],
+                                  doctor['hospital']['name'],
+                                  doctor['photoUrl'],
+                                  primaryGreen,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
